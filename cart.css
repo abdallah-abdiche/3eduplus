@@ -1,0 +1,230 @@
+.paiement {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+
+.paiement h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+
+.paiement form > label {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+
+.promo-code-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.promo-code-container input[type="text"] {
+    flex: 1;
+    padding: 10px 12px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #333;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.promo-code-container input[type="text"]::placeholder {
+    color: #999;
+}
+
+.promo-code-container input[type="text"]:focus {
+    outline: none;
+    border-color: #0066cc;
+}
+
+
+.promo-icon-btn {
+    padding: 10px 14px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.promo-icon-btn:hover {
+    background-color: #e8e8e8;
+}
+
+.promo-icon-btn i {
+    font-size: 1rem;
+}
+
+
+.order-details {
+    margin-bottom: 20px;
+}
+
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.summary-row span:first-child {
+    font-weight: 400;
+}
+
+.summary-row span:last-child {
+    font-weight: 400;
+}
+
+
+.tva-row {
+    background-color: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 12px 0;
+}
+
+.tva-row span {
+    background-color: transparent;
+}
+
+.tva-row span:last-child {
+    background-color: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+
+.total-row {
+    margin-top: 16px;
+    margin-bottom: 20px;
+}
+
+.total-row span:first-child {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+
+.total-amount {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #0066cc !important;
+}
+
+
+.order-details button[type="button"],
+.paiement form button[type="button"]:not(.promo-icon-btn) {
+    width: 100%;
+    padding: 14px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.order-details button[type="button"]:hover,
+.paiement form button[type="button"]:not(.promo-icon-btn):hover {
+    background-color: #0052a3;
+}
+
+
+.paiement form button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: white;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.paiement form button[type="submit"]:hover {
+    background-color: #f5f5f5;
+}
+
+
+.security-guarantees {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.security-guarantees p {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 8px 0;
+    font-weight: 400;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+}
+
+.security-guarantees .checkmark {
+    color: #333;
+    margin-right: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+
+.paiement form {
+    display: flex;
+    flex-direction: column;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+
+.paiement form br {
+    display: none;
+}
+
+
+.paiement form p:not(.security-guarantees p),
+.paiement form h2 {
+    display: none;
+}
+.paiment-article{
+    margin-right: -800px;
+    
+    
+}

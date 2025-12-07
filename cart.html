@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier - 3edu+</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cart.css">
     <link rel="icon" href="./LogoEdu.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
 </head>
 
 <body>
-    <!-- Header -->
+ 
     <header class="header-nav">
         <div class="logo-container">
             <a href="index.html"><img src="./LogoEdu.png" alt="3edu+ Logo"></a>
@@ -45,7 +46,6 @@
       
     </header>
 
-    <!-- Cart Section -->
     <section class="cart-section">
         <div class="container">
             <div class="cart-header">
@@ -54,12 +54,12 @@
             </div>
 
             <div class="cart-content">
-                <!-- Cart Items -->
+               
                 <div class="cart-items" id="cart-items">
-                    <!-- Cart items will be dynamically added here -->
+                  
                 </div>
 
-                <!-- Empty Cart Message -->
+                
                 <div class="empty-cart" id="empty-cart">
                     <div class="empty-cart-content">
                         <i class="fas fa-shopping-cart"></i>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
 
-                <!-- Cart Summary -->
+               
                 <div class="cart-summary" id="cart-summary" style="display: none;">
                     <div class="summary-card">
                         <h3>Résumé de la commande</h3>
@@ -104,38 +104,55 @@
 
 
 
-    <article>
+    <article class="paiment-article">
 
         <div >
-            <h2>Payment Page</h2>
-            <form>
-              <label for="name">Full Name</label><br>
-              <input type="text" id="name" placeholder="Your Name" required ><br>
+            <div class="paiement ">
+               <form>
+               
+                <h1>Récapitulatif</h1>
         
-              <label >Card Number</label><br>
-              <input type="text  placeholder="XXXX-XXXX-XXXX-XXXX" required ><br>
-        
-              <label >Expiration Date</label><br>
-              <input type="month"  required /><br>
-        
-              <label >CVV</label><br>
-              <input type="password"   placeholder="123" required ><br>
-        
-              <label >Promo Code</label>
-              <br>
-              <div >
-                <input type="text"  placeholder="Enter promo code" /><br>
-                <button type="button">Apply</button>
+              <label>Code promo</label>
+              <div class="promo-code-container">
+                <input type="text" placeholder="Entrez votre code" />
+                <button type="button" class="promo-icon-btn" aria-label="Appliquer le code promo">
+                  <i class="fas fa-tag"></i>
+                </button>
               </div>
+
+              <div class="order-details">
+                <div class="summary-row">
+                  <span>Sous-total</span>
+                  <span>599.00€</span>
+                </div>
+                <div class="summary-row tva-row">
+                  <span>TVA (20%)</span>
+                  <span>119.80€</span>
+                </div>
+                <div class="summary-row total-row">
+                  <span>Total</span>
+                  <span class="total-amount">718.80€</span>
+                </div>
+
+                <button type="button">Procéder au paiement</button>
+              </div>
+
+              <button type="submit">Continuer les achats</button>
+              
+            
+              <div class="security-guarantees">
+                <p><span class="checkmark">✓</span> Paiement 100% sécurisé</p>
+                <p><span class="checkmark">✓</span> Accès immédiat après paiement</p>
+                <p><span class="checkmark">✓</span> Garantie satisfait ou remboursé 30 jours</p>
+              </div>
+              </form>
+            </div>
+
+             </article>
+
         
-              <button type="submit">Pay Now</button>
-            </form>
-
-    </article>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
+           <footer class="footer">
+         <div class="footer-content">
             <div class="footer-section">
                 <div class="footer-logo">
                     <img src="./LogoEdu.png" alt="3edu+ Logo" width="150" height="100">

@@ -1,4 +1,4 @@
-/* Reset and base styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -26,7 +26,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Light mode background */
+
 body {
     background: 
         radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
@@ -37,7 +37,7 @@ body {
         linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
 }
 
-/* Professional Background Pattern */
+
 body::before {
     content: '';
     position: fixed;
@@ -50,7 +50,7 @@ body::before {
     animation: particleFloat 30s ease-in-out infinite;
 }
 
-/* Light mode background pattern */
+
 body::before {
     background: 
         radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
@@ -61,7 +61,6 @@ body::before {
         radial-gradient(circle at 90% 10%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
 }
 
-/* Subtle Grid Pattern */
 body::after {
     content: '';
     position: fixed;
@@ -74,7 +73,7 @@ body::after {
     animation: gridFloat 25s ease-in-out infinite;
 }
 
-/* Light mode grid pattern */
+
 body::after {
     background-image: 
         linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
@@ -86,7 +85,7 @@ body::after {
     opacity: 0.4;
 }
 
-/* Floating Particles Animation */
+
 @keyframes gridFloat {
     0%, 100% {
         transform: translateY(0px) translateX(0px) rotate(0deg);
@@ -114,7 +113,7 @@ body::after {
     }
 }
 
-/* Add floating particles */
+
 body {
     position: relative;
 }
@@ -158,7 +157,7 @@ body::before {
     }
 }
 
-/* Login/Signup Page Styles */
+
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -495,7 +494,7 @@ body::before {
     color: #0066ff;
 }
 
-/* Responsive Design for Auth */
+
 @media (max-width: 768px) {
     .auth-container {
         padding: 1rem;

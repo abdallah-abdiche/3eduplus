@@ -1,3 +1,47 @@
+<?php
+session_start();
+require_once 'config.php';
+
+// Fetch all formations from database
+$formations = [];
+$query = "SELECT formation_id, titre, categorie, prix, niveau, duree, date_creation, formationImageUrl FROM Formations ORDER BY date_creation DESC";
+$result = $conn->query($query);
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $formations[] = $row;
+    }
+}
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_id']);
+$user_name = $is_logged_in ? ($_SESSION['user_name'] ?? 'Utilisateur') : '';
+
+// Get cart count from session
+$cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+
+// Handle add to cart via AJAX
+if (isset($_POST['add_to_cart'])) {
+    $formation_id = (int)$_POST['formation_id'];
+    
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+    
+    if (!in_array($formation_id, $_SESSION['cart'])) {
+        $_SESSION['cart'][] = $formation_id;
+    }
+    
+    echo json_encode(['success' => true, 'cart_count' => count($_SESSION['cart'])]);
+    exit();
+}
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +51,7 @@
     <title>3edu+</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./LogoEdu.png" type="image/png">
+    <link rel="stylesheet" href="user-btn.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -19,10 +64,10 @@
 
         <nav class="main-nav">
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Accueil</a></li>
-                <li><a href="formation.html">Formations</a></li>
-                <li><a href="evenements.html">Événements</a></li>
-                <li><a href="about.html">À propos</a></li>
+                <li><a href="index.php" class="active">Accueil</a></li>
+                <li><a href="formation.php">Formations</a></li>
+                <li><a href="evenements.php">Événements</a></li>
+                <li><a href="about.php">À propos</a></li>
             </ul>
         </nav>
 
@@ -47,13 +92,26 @@
                 <img src="https://cdn-icons-png.flaticon.com/128/2838/2838895.png" width="30" height="30" alt="Panier">
                 <span class="cart-count">0</span>
             </a>
-            <a href="login.html" class="login-btn">Connexion</a>
+             <?php if ($is_logged_in): ?>
+                <div class="user-menu">
+                    <button class="user-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <?php echo htmlspecialchars($user_name); ?>
+                    </button>
+                    <div class="user-dropdown">
+                        <a href="dashboard/apprenant/index.php">Mon Tableau de bord</a>
+                        <a href="logout.php">Déconnexion</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php" class="login-btn">Connexion</a>
+            <?php endif; ?>
         </div>
 
 
     </header>
 
-    <!-- Hero Section -->
+    
     <article class="article-lwla">
         <h1 class="h1_article-lwla">
             Développez vos compétences avec
@@ -77,7 +135,7 @@
         </div>
     </article>
 
-    <!-- Categories Section -->
+    
     <section>
         <h2>Explorez nos catégories</h2>
         <p>
@@ -143,7 +201,6 @@
         </div>
     </section>
 
-    <!-- Popular Courses -->
     <section class="courses-section">
         <div class="courses-header">
             <div>
@@ -209,7 +266,7 @@
             </div>
         </div>
 
-        <!-- Testimonials -->
+  
         <section class="testimonials-section">
             <h2>Ce que disent nos étudiants</h2>
             <div class="testimonials-grid">
@@ -242,7 +299,7 @@
             </div>
         </section>
 
-        <!-- CTA -->
+       
         <section class="cta-section">
             <h2>Prêt à commencer votre formation ?</h2>
             <p>Rejoignez des milliers d'étudiants qui ont déjà transformé leur carrière avec 3edu+</p>
@@ -253,7 +310,6 @@
         </section>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">

@@ -1,3 +1,53 @@
+<?php
+session_start();
+require_once 'config.php';
+require_once 'auth.php';
+
+checkAuth();
+$user = getCurrentUser();
+
+// Fetch cart items
+$cart_query = "SELECT p.formation_id, p.prix_unitaire, f.titre, f.prix as prix_courant
+               FROM panier p
+               JOIN formations f ON p.formation_id = f.formation_id
+               WHERE p.formation_id = ?
+               ORDER BY p.date_ajout DESC";
+$cart_stmt = $conn->prepare($cart_query);
+$cart_stmt->bind_param("i", $user['id']);
+$cart_stmt->execute();
+$cart_result = $cart_stmt->get_result();
+$cart_items = [];
+$total = 0;
+
+while ($item = $cart_result->fetch_assoc()) {
+    $cart_items[] = $item;
+    $total += $item['prix_unitaire'];
+}
+$cart_stmt->close();
+
+// Handle remove from cart
+if (isset($_POST['remove_item'])) {
+    $item_id = (int)$_POST['item_id'];
+    $delete_stmt = $conn->prepare("DELETE FROM panier WHERE id = ? AND utilisateur_id = ?");
+    $delete_stmt->bind_param("ii", $item_id, $user['id']);
+    $delete_stmt->execute();
+    $delete_stmt->close();
+    header('Location: cart.php');
+    exit();
+}
+
+// Handle checkout
+if (isset($_POST['checkout'])) {
+    if (count($cart_items) > 0) {
+        $_SESSION['checkout_total'] = $total;
+        $_SESSION['checkout_items'] = $cart_items;
+        header('Location: payment.php');
+        exit();
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,11 +58,12 @@
     <link rel="stylesheet" href="about.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./LogoEdu.png" type="image/png">
+    <link rel="stylesheet" href="user-btn.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-    <!-- Header -->
+  
     <header class="header-nav">
         <div class="logocontainer">
             <a href="#"><img src="./LogoEdu.png" width="150" height="100" alt="3edu+ Logo"></a>
@@ -20,10 +71,10 @@
 
         <nav class="main-nav">
             <ul class="nav-links">
-                <li><a href="index.html" >Accueil</a></li>
-                <li><a href="formation.html">Formations</a></li>
-                <li><a href="evenements.html">Événements</a></li>
-                <li><a href="about.html" class="active">À propos</a></li>
+                <li><a href="index.php " >Accueil</a></li>
+                <li><a href="formation.php">Formations</a></li>
+                <li><a href="evenements.php">Événements</a></li>
+                <li><a href="about.php" class="active">À propos</a></li>
             </ul>
         </nav>
 
@@ -48,11 +99,24 @@
                 <img src="https://cdn-icons-png.flaticon.com/128/2838/2838895.png" width="30" height="30" alt="Panier">
                 <span class="cart-count">0</span>
             </a>
-            <a href="login.html" class="login-btn">Connexion</a>
+            <?php if ($is_logged_in): ?>
+                <div class="user-menu">
+                    <button class="user-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <?php echo htmlspecialchars($user_name); ?>
+                    </button>
+                    <div class="user-dropdown">
+                        <a href="dashboard/apprenant/index.php">Mon Tableau de bord</a>
+                        <a href="logout.php">Déconnexion</a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="login.php" class="login-btn">Connexion</a>
+            <?php endif; ?>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    
     <section class="about-hero">
         <div class="about-hero-content">
             <h1>À propos de 3edu+</h1>
@@ -79,7 +143,7 @@
         </div>
     </section>
 
-    <!-- Mission Section -->
+   
     <section class="mission-section">
         <div class="container">
             <h2>Notre Mission</h2>
@@ -88,7 +152,6 @@
         </div>
     </section>
 
-    <!-- Values Section -->
     <section class="values-section">
         <div class="container">
             <h2>Nos Valeurs</h2>
@@ -128,7 +191,7 @@
         </div>
     </section>
 
-    <!-- Team Section -->
+   
     <section class="team-section">
         <div class="container">
             <h2>Notre Équipe</h2>
@@ -170,10 +233,10 @@
         </div>
     </section>
 
-    <!-- FAQ & Blog Section -->
+  
     <section class="faq-blog-section">
         <div class="container">
-            <!-- Tab Navigation -->
+
             <div class="faq-blog-tabs">
                 <button class="tab-btn active">
                     <i class="fas fa-question-circle"></i>
@@ -185,7 +248,7 @@
                 </button>
             </div>
 
-            <!-- FAQ Content -->
+           
             <div class="faq-content active">
                 <h2>Questions Fréquentes</h2>
                 <p class="section-subtitle">Trouvez les réponses à vos questions les plus courantes</p>
@@ -260,7 +323,7 @@
                 </div>
             </div>
 
-            <!-- Blog Content -->
+          
             <div class="blog-content">
                 <h2>Notre Blog</h2>
                 <p class="section-subtitle">Découvrez nos derniers articles et conseils</p>
@@ -324,7 +387,7 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
+
     <section class="contact-section">
         <div class="container">
             <h2>Une question ? Contactez-nous</h2>
@@ -361,7 +424,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
+   
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">

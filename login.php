@@ -11,17 +11,16 @@
 </head>
 
 <body>
-    <!-- Login Container -->
+
     <div class="auth-container">
         <div class="auth-card">
-            <!-- Logo  -->
+     
             <div class="auth-header">
                 <img src="./LogoEdu.png" alt="3edu+ Logo" class="auth-logo">
                 <h1>Bienvenue sur 3edu+</h1>
                 <p>Accédez à vos formations et développez vos compétences</p>
             </div>
 
-            <!-- Tab Navigation -->
             <div class="auth-tabs">
                 <button class="tab-btn active">
                     <i class="fas fa-sign-in-alt"></i>
@@ -33,8 +32,7 @@
                 </a>
             </div>
 
-            <!-- Login Form -->
-            <form class="auth-form active" id="login-form" method="post" action="#">
+            <form class="auth-form active" id="login-form" method="post" action="signup.php" >
                 <div class="form-group">
                     <label for="login-email">Email</label>
                     <div class="input-wrapper">
@@ -60,7 +58,7 @@
                     <a href="#" class="forgot-link">Mot de passe oublié ?</a>
                 </div>
 
-                <button type="submit" class="auth-btn">
+                <button type="submit" class="auth-btn" name="login">
                     <i class="fas fa-sign-in-alt"></i>
                     Se connecter
                 </button>
@@ -78,10 +76,11 @@
                         <i class="fab fa-facebook-f"></i>
                         Facebook
                     </button>
+             
                 </div>
+                
             </form>
-
-            <!-- Back to Home -->
+              
             <div class="auth-footer">
                 <a href="index.html" class="back-link">
                     <i class="fas fa-arrow-left"></i>
@@ -90,6 +89,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>

@@ -1,0 +1,230 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    header("Location: /login.php"); 
+    exit();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - 3edu+</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../LogoEdu.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+      
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="../LogoEdu.png" alt="3edu+ Logo">
+                
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <p class="nav-section-title">MENU</p>
+                    <ul class="nav-menu">
+                        <li class="nav-item active">
+                            <a href="index.html" class="nav-link">
+                                <i class="fas fa-chevron-up nav-arrow"></i>
+                                <span>Dashboard</span>
+                            </a>
+                           
+                        </li>
+                      <li class="nav-item ">
+                          <a href="users.html" class="nav-link">
+                         <i class="fas fa-chevron-up nav-arrow"></i>
+                            <span>Users</span>
+                                   </a>
+                      </li>
+                        <li class="nav-item">
+                            <a href="courses.html" class="nav-link">
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                                <span>Courses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="reports.html" class="nav-link">
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <p class="nav-section-title">OTHERS</p>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                                <span>Charts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                                <span>UI Elements</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-chevron-down nav-arrow"></i>
+                                <span>Authentication</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            
+        </aside>
+
+       
+        <main class="main-content">
+           
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1 class="header-logo">Dashboard</h1>
+                </div>
+                <div class="header-center">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search or type command..." class="search-input">
+                        <span class="search-shortcut">K</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-icon-btn dark-mode-toggle" title="Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="header-icon-btn notifications-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-profile">
+                        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31" class="admin-avatar">
+                        <span class="user-name">Account</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+         
+            <div class="dashboard-content">
+               
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon customers">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="metric-info">
+                            <p class="metric-label">Students</p>
+                            <h2 class="metric-value">3,782</h2>
+                            <p class="metric-change positive">
+                                <i class="fas fa-arrow-up"></i> 11.01%
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon orders">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="metric-info">
+                            <p class="metric-label">Courses sells</p>
+                            <h2 class="metric-value">359</h2>
+                            <p class="metric-change negative">
+                                <i class="fas fa-arrow-down"></i> 9.05%
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card monthly-target">
+                        <div class="target-header">
+                            <div>
+                                <h3 class="target-title">Monthly Target</h3>
+                                <p class="target-subtitle">Target you've set for each month</p>
+                            </div>
+                        </div>
+                        <div class="target-progress">
+                            <div class="circular-progress">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
+                                    <circle class="progress-ring-circle" cx="60" cy="60" r="54" style="stroke-dashoffset: 78;"></circle>
+                                </svg>
+                                <div class="progress-text">
+                                    <span class="progress-percentage">75.55%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="target-message">
+                            <p>You earn $3287 today, it's higher than last month. Keep up your good work!</p>
+                        </div>
+                        <div class="target-stats">
+                            <div class="target-stat">
+                                <span class="stat-label">Target $20K</span>
+                                <span class="stat-arrow down">↓</span>
+                            </div>
+                            <div class="target-stat">
+                                <span class="stat-label">Revenue $20K</span>
+                                <span class="stat-arrow up">↑</span>
+                            </div>
+                            <div class="target-stat">
+                                <span class="stat-label">Today $20K</span>
+                                <span class="stat-arrow up">↑</span>
+                            </div>
+                        </div>
+                        <div class="target-indicator">
+                            <span class="indicator-text positive">+10%</span>
+                        </div>
+                    </div>
+                </div>
+
+    
+                <div class="charts-grid">
+        
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Monthly Sales</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="monthlySalesChart"></canvas>
+                        </div>
+                    </div>
+
+                
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Statistics</h3>
+                            <p class="chart-subtitle">Target you've set for each month</p>
+                            <div class="chart-toggles">
+                                <button class="chart-toggle active" data-period="monthly">Monthly</button>
+                                <button class="chart-toggle" data-period="quarterly">Quarterly</button>
+                                <button class="chart-toggle" data-period="annually">Annually</button>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="statisticsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+     <script src="account.js"></script>
+    <script src="dashboard.js"></script>
+   
+</body>
+</html>
+

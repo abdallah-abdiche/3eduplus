@@ -26,7 +26,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Light mode background */
+
 body {
     background: 
         radial-gradient(circle at 15% 85%, rgba(59, 130, 246, 0.08) 0%, transparent 60%),
@@ -37,7 +37,7 @@ body {
         linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
 }
 
-/* Professional Background Pattern */
+
 body::before {
     content: '';
     position: fixed;
@@ -50,7 +50,7 @@ body::before {
     animation: particleFloat 30s ease-in-out infinite;
 }
 
-/* Light mode background pattern */
+
 body::before {
     background: 
         radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
@@ -290,20 +290,82 @@ body::before {
     z-index: 2;
 }
 
-.input-wrapper input {
+.input-wrapper input,
+.input-wrapper select {
     width: 100%;
     padding: 1rem 3rem 1rem 3rem;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    background: white;
+    background: #ffffff;
+    color: #1a2937;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
-.input-wrapper input:focus {
+.input-wrapper input:focus,
+.input-wrapper select:focus {
     outline: none;
     border-color: #0066ff;
     box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.input-wrapper select {
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, #0066ff 50%), linear-gradient(135deg, #0066ff 50%, transparent 50%);
+    background-position: calc(100% - 25px) calc(50% - 3px), calc(100% - 18px) calc(50% - 3px);
+    background-size: 7px 7px;
+    background-repeat: no-repeat;
+    padding-right: 3.5rem;
+}
+
+.input-wrapper select::-ms-expand {
+    display: none;
+}
+
+.input-wrapper input[type="date"] {
+    padding-right: 3.5rem;
+}
+
+.input-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+    color: transparent;
+    background: none;
+    z-index: 3;
+    cursor: pointer;
+}
+
+.input-wrapper input[type="file"] {
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    color: #475569;
+}
+
+.input-wrapper input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #0066ff 0%, #4a9eff 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper input[type="file"]::file-selector-button:hover {
+    box-shadow: 0 4px 12px rgba(0, 102, 255, 0.35);
+    transform: translateY(-1px);
+}
+
+.input-wrapper input[type="file"]::-ms-browse {
+    background: linear-gradient(135deg, #0066ff 0%, #4a9eff 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1.25rem;
+    cursor: pointer;
+    font-weight: 600;
 }
 
 .toggle-password {
@@ -411,6 +473,24 @@ body::before {
     box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4);
 }
 
+
+
+
+
+
+
+
+
+
+
+.input-wrapper input[type="file"]:focus,
+.input-wrapper input[type="date"]:focus {
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    border-color: #0066ff;
+}
+
+
+
 .divider {
     text-align: center;
     margin: 1.5rem 0;
@@ -517,6 +597,46 @@ body::before {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+/* Forgot password and form footer styles */
+.forgot-password {
+    color: #0066ff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #0052cc;
+    text-decoration: underline;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.form-footer p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.switch-tab {
+    color: #0066ff;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.switch-tab:hover {
+    color: #0052cc;
+    text-decoration: underline;
 }
 
 @media (max-width: 480px) {
