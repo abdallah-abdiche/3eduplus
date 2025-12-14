@@ -60,7 +60,7 @@ function redirectByRole($user_role = null) {
     }
     
     $redirects = [
-        'Admin' => '/3eduplus/dashboard/admin/index.php',
+        'Admin' => '/3eduplus/dashboard/admin/index.html',
         'Commercial' => '/3eduplus/dashboard/commercial/index.php',
         'Pédagogique' => '/3eduplus/dashboard/pedagogique/index.php',
         'Marketing' => '/3eduplus/dashboard/marketing/index.php',
@@ -85,7 +85,7 @@ function getDashboardUrl($user_role = null) {
     }
     
     $dashboards = [
-        'Admin' => 'dashboard/admin/index.php',
+        'Admin' => 'dashboard/admin/index.html',
         'Commercial' => 'dashboard/commercial/index.php',
         'Pédagogique' => 'dashboard/pedagogique/index.php',
         'Marketing' => 'dashboard/marketing/index.php',

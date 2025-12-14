@@ -39,13 +39,19 @@
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="courses.html" class="nav-link">
+                                                    <a href="courses.php" class="nav-link">
                                                         <i class="fas fa-chevron-down nav-arrow"></i>
                                                         <span>Courses</span>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a href="reports.html" class="nav-link">
+                                                    <a href="purchased-courses.php" class="nav-link">
+                                                        <i class="fas fa-chevron-down nav-arrow"></i>
+                                                        <span>Inscriptions</span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="reports.php" class="nav-link">
                                                         <i class="fas fa-chevron-down nav-arrow"></i>
                                                         <span>Reports</span>
                                                     </a>

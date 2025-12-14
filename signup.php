@@ -367,6 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                             <option value="Commercial">Commercial</option>
                             <option value="Pédagogique">Pédagogique (Formateur)</option>
                             <option value="Marketing">Marketing</option>
+                            <option value="Admin">Admin</option>
                         </select>
                     </div>
                 </div>
