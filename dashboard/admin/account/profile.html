@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="container">
+        <div class="profile-sidebar">
+            <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31" alt="Profile" class="profile-image">
+            <div class="profile-name">account</div>
+            <div class="profile-email">admin@gmail.com</div>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('settings')">Edit Experience</div>
+                <div class="tab" onclick="showTab('experience')">Experience</div>
+            </div>
+
+            <div id="settingsTab">
+                <h1 class="content-header">Profile Settings</h1>
+                
+                <form onsubmit="saveProfile(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="username">username</label>
+                            <input type="text" id="username" placeholder="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">password</label>
+                            <input type="text" id="password" placeholder="password">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="phone">PhoneNumber</label>
+                        <input type="tel" id="phone" placeholder="enter phone number">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="wilaya">wilaya</label>
+                        <input type="text" id="wilaya" placeholder="enter wilaya">
+                    </div>
+
+
+                    <div class="button-container">
+                        <button type="submit" class="save-button">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="experienceTab" class="experience-section">
+                <h1 class="content-header">Experience</h1>
+                
+                <form onsubmit="saveExperience(event)">
+                    <div class="form-group full-width">
+                        <label for="experienceDesign">Experience in Designing</label>
+                        <textarea id="experienceDesign" placeholder="experience"></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="additionalDetails">Additional Details</label>
+                        <textarea id="additionalDetails" placeholder="additional details"></textarea>
+                    </div>
+
+                    <div class="button-container">
+                        <button type="submit" class="save-button">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="profile.js"></script>
+</body>
+</html>
