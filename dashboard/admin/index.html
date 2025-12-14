@@ -2,13 +2,14 @@
 session_start();
 
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    header("Location: /login.php"); 
+    header("Location: /3eduplus/signup.php"); 
     exit();
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,14 +19,15 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="dashboard-container">
-      
+
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <img src="../LogoEdu.png" alt="3edu+ Logo">
-                
+
                 </div>
             </div>
 
@@ -38,14 +40,14 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                                 <i class="fas fa-chevron-up nav-arrow"></i>
                                 <span>Dashboard</span>
                             </a>
-                           
+
                         </li>
-                      <li class="nav-item ">
-                          <a href="users.html" class="nav-link">
-                         <i class="fas fa-chevron-up nav-arrow"></i>
-                            <span>Users</span>
-                                   </a>
-                      </li>
+                        <li class="nav-item ">
+                            <a href="users.html" class="nav-link">
+                                <i class="fas fa-chevron-up nav-arrow"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="courses.html" class="nav-link">
                                 <i class="fas fa-chevron-down nav-arrow"></i>
@@ -58,7 +60,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                                 <span>Reports</span>
                             </a>
                         </li>
-                        
+
                     </ul>
                 </div>
 
@@ -87,12 +89,12 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                 </div>
             </nav>
 
-            
+
         </aside>
 
-       
+
         <main class="main-content">
-           
+
             <header class="dashboard-header">
                 <div class="header-left">
                     <h1 class="header-logo">Dashboard</h1>
@@ -113,16 +115,17 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                         <span class="notification-badge">3</span>
                     </button>
                     <div class="user-profile">
-                        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31" class="admin-avatar">
+                        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31"
+                            class="admin-avatar">
                         <span class="user-name">Account</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </header>
 
-         
+
             <div class="dashboard-content">
-               
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-icon customers">
@@ -161,7 +164,8 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                             <div class="circular-progress">
                                 <svg class="progress-ring" width="120" height="120">
                                     <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54"></circle>
-                                    <circle class="progress-ring-circle" cx="60" cy="60" r="54" style="stroke-dashoffset: 78;"></circle>
+                                    <circle class="progress-ring-circle" cx="60" cy="60" r="54"
+                                        style="stroke-dashoffset: 78;"></circle>
                                 </svg>
                                 <div class="progress-text">
                                     <span class="progress-percentage">75.55%</span>
@@ -191,9 +195,9 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                     </div>
                 </div>
 
-    
+
                 <div class="charts-grid">
-        
+
                     <div class="chart-card">
                         <div class="chart-header">
                             <h3 class="chart-title">Monthly Sales</h3>
@@ -203,7 +207,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
                         </div>
                     </div>
 
-                
+
                     <div class="chart-card">
                         <div class="chart-header">
                             <h3 class="chart-title">Statistics</h3>
@@ -222,9 +226,9 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
             </div>
         </main>
     </div>
-     <script src="account.js"></script>
+    <script src="account.js"></script>
     <script src="dashboard.js"></script>
-   
-</body>
-</html>
 
+</body>
+
+</html>

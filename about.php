@@ -3,27 +3,33 @@ session_start();
 require_once 'config.php';
 require_once 'auth.php';
 
-checkAuth();
-$user = getCurrentUser();
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_id']);
+$user_name = $is_logged_in ? ($_SESSION['user_name'] ?? 'Utilisateur') : '';
 
-// Fetch cart items
-$cart_query = "SELECT p.formation_id, p.prix_unitaire, f.titre, f.prix as prix_courant
-               FROM panier p
-               JOIN formations f ON p.formation_id = f.formation_id
-               WHERE p.formation_id = ?
-               ORDER BY p.date_ajout DESC";
-$cart_stmt = $conn->prepare($cart_query);
-$cart_stmt->bind_param("i", $user['id']);
-$cart_stmt->execute();
-$cart_result = $cart_stmt->get_result();
+// Fetch cart items only if logged in
 $cart_items = [];
 $total = 0;
 
-while ($item = $cart_result->fetch_assoc()) {
-    $cart_items[] = $item;
-    $total += $item['prix_unitaire'];
+if ($is_logged_in) {
+    $user_id = $_SESSION['user_id'];
+    
+    $cart_query = "SELECT p.formation_id, p.prix_unitaire, f.titre, f.prix as prix_courant
+                   FROM panier p
+                   JOIN formations f ON p.formation_id = f.formation_id
+                   WHERE p.utilisateur_id = ?
+                   ORDER BY p.date_ajout DESC";
+    $cart_stmt = $conn->prepare($cart_query);
+    $cart_stmt->bind_param("i", $user_id);
+    $cart_stmt->execute();
+    $cart_result = $cart_stmt->get_result();
+    
+    while ($item = $cart_result->fetch_assoc()) {
+        $cart_items[] = $item;
+        $total += $item['prix_unitaire'];
+    }
+    $cart_stmt->close();
 }
-$cart_stmt->close();
 
 // Handle remove from cart
 if (isset($_POST['remove_item'])) {
@@ -95,7 +101,7 @@ if (isset($_POST['checkout'])) {
             <button title="Toggle dark mode" class="darkMode">
                 <i class="fas fa-moon" style="color: rgba(245, 196, 0, 0.873);"></i>
             </button>
-            <a href="cart.html" class="cart-icon" title="Panier">
+            <a href="cart.php" class="cart-icon" title="Panier">
                 <img src="https://cdn-icons-png.flaticon.com/128/2838/2838895.png" width="30" height="30" alt="Panier">
                 <span class="cart-count">0</span>
             </a>
@@ -106,12 +112,12 @@ if (isset($_POST['checkout'])) {
                         <?php echo htmlspecialchars($user_name); ?>
                     </button>
                     <div class="user-dropdown">
-                        <a href="dashboard/apprenant/index.php">Mon Tableau de bord</a>
+                        <a href="<?php echo getDashboardUrl(); ?>">Mon Tableau de bord</a>
                         <a href="logout.php">Déconnexion</a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="login-btn">Connexion</a>
+                <a href="signup.php" class="signup-btn">Connexion</a>
             <?php endif; ?>
         </div>
     </header>
@@ -438,10 +444,10 @@ if (isset($_POST['checkout'])) {
             <div class="footer-section">
                 <h3>Liens rapides</h3>
                 <ul class="footer-links">
-                    <li><a href="index.html">Accueil</a></li>
-                    <li><a href="#">Nos formations</a></li>
-                    <li><a href="#">Événements</a></li>
-                    <li><a href="about.html">À propos</a></li>
+                    <li><a href="index.php">Accueil</a></li>
+                    <li><a href="formation.php">Nos formations</a></li>
+                    <li><a href="evenements.php">Événements</a></li>
+                    <li><a href="about.php">À propos</a></li>
                     <li><a href="#">FAQ</a></li>
                 </ul>
             </div>

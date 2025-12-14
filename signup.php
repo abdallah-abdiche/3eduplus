@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     }
 }
 ?>
-?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -405,7 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             </form>
 
             <div class="auth-footer">
-                <a href="index.html" class="back-link">
+                <a href="index.php" class="back-link">
                     <i class="fas fa-arrow-left"></i>
                     Retour à l'accueil
                 </a>

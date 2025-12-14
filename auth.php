@@ -64,7 +64,7 @@ function redirectByRole($user_role = null) {
         'Commercial' => '/3eduplus/dashboard/commercial/index.php',
         'Pédagogique' => '/3eduplus/dashboard/pedagogique/index.php',
         'Marketing' => '/3eduplus/dashboard/marketing/index.php',
-        'Apprenant' => '/3eduplus/dashboard/apprenant/index.php'
+        'Apprenant' => '/3eduplus/formation.php'
     ];
     
     $redirect_url = $redirects[$user_role] ?? $redirects['Apprenant'];
@@ -76,5 +76,22 @@ function redirectByRole($user_role = null) {
     
     header('Location: ' . $redirect_url);
     exit();
+}
+
+// Get dashboard URL based on role
+function getDashboardUrl($user_role = null) {
+    if ($user_role === null) {
+        $user_role = $_SESSION['user_role'] ?? 'Apprenant';
+    }
+    
+    $dashboards = [
+        'Admin' => 'dashboard/admin/index.php',
+        'Commercial' => 'dashboard/commercial/index.php',
+        'Pédagogique' => 'dashboard/pedagogique/index.php',
+        'Marketing' => 'dashboard/marketing/index.php',
+        'Apprenant' => 'formation.php'
+    ];
+    
+    return $dashboards[$user_role] ?? $dashboards['Apprenant'];
 }
 ?>

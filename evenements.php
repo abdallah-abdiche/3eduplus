@@ -1,6 +1,7 @@
   <?php
 session_start();
 require_once 'config.php';
+require_once 'auth.php';
 
 // Fetch all formations from database
 $formations = [];
@@ -84,7 +85,7 @@ if (isset($_POST['add_to_cart'])) {
             <button title="Toggle dark mode" class="darkMode">
                 <i class="fas fa-moon" style="color: rgba(245, 196, 0, 0.873);"></i>
             </button>
-            <a href="cart.html" class="cart-icon" title="Panier">
+            <a href="cart.php" class="cart-icon" title="Panier">
                 <img src="https://cdn-icons-png.flaticon.com/128/2838/2838895.png" width="30" height="30" alt="Panier">
                 <span class="cart-count">0</span>
             </a>
@@ -95,12 +96,12 @@ if (isset($_POST['add_to_cart'])) {
                         <?php echo htmlspecialchars($user_name); ?>
                     </button>
                     <div class="user-dropdown">
-                        <a href="dashboard/apprenant/index.php">Mon Tableau de bord</a>
+                        <a href="<?php echo getDashboardUrl(); ?>">Mon Tableau de bord</a>
                         <a href="logout.php">Déconnexion</a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="login-btn">Connexion</a>
+                <a href="signup.php" class="signup-btn">Connexion</a>
             <?php endif; ?>
         </div>
 
@@ -367,9 +368,9 @@ if (isset($_POST['add_to_cart'])) {
           <div class="footer-section">
               <h3>Liens rapides</h3>
               <ul class="footer-links">
-                  <li><a href="#">Nos formations</a></li>
-                  <li><a href="#">Événements</a></li>
-                  <li><a href="#">À propos</a></li>
+                  <li><a href="formation.php">Nos formations</a></li>
+                  <li><a href="evenements.php">Événements</a></li>
+                  <li><a href="about.php">À propos</a></li>
                   <li><a href="#">FAQ</a></li>
                   <li><a href="#">Blog</a></li>
               </ul>

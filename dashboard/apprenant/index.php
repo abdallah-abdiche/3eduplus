@@ -78,7 +78,7 @@ foreach ($payments as $payment) {
                 <a href="../../formation.php" class="nav-link">
                     <i class="fas fa-book"></i> Cours
                 </a>
-                <a href="../../cart.html" class="nav-link">
+                <a href="../../cart.php" class="nav-link">
                     <i class="fas fa-shopping-cart"></i> Panier
                 </a>
                 <div class="nav-user">

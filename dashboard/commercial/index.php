@@ -81,7 +81,7 @@ $avg_transaction = $customer_stats['avg_transaction'] ?? 0;
                 <a href="../../formation.php" class="nav-link">
                     <i class="fas fa-book"></i> Cours
                 </a>
-                <a href="../../index.html" class="nav-link">
+                <a href="../../index.php" class="nav-link">
                     <i class="fas fa-globe"></i> Site
                 </a>
                 <div class="nav-user">

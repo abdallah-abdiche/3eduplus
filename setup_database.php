@@ -262,7 +262,7 @@ $conn->close();
                 <ul>
                     <li>Go to <a href="signup.php">signup.php</a> to register and login</li>
                     <li>Go to <a href="formation.php">formation.php</a> to browse courses</li>
-                    <li>Return to <a href="index.html">home page</a></li>
+                    <li>Return to <a href="index.php">home page</a></li>
                 </ul>
             </div>
         <?php else: ?>
@@ -278,7 +278,7 @@ $conn->close();
             </div>
         <?php endif; ?>
         
-        <a href="index.html" class="back-link">← Return to Home</a>
+        <a href="index.php" class="back-link">← Return to Home</a>
     </div>
 </body>
 </html>
