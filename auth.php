@@ -1,11 +1,4 @@
 <?php
-/**
- * auth.php - Authentication and Authorization Middleware
- * Include this file at the top of protected pages to verify session and role
- * Note: session_start() should be called before including this file
- */
-
-// Check if user is logged in
 function checkAuth() {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
@@ -14,17 +7,22 @@ function checkAuth() {
     }
 }
 
-// Check if user has required role
 function checkRole($required_roles) {
     checkAuth();
     
     $user_role = $_SESSION['user_role'] ?? null;
     
-    // Convert single role to array
     if (is_string($required_roles)) {
         $required_roles = [$required_roles];
     }
     
+<<<<<<< HEAD
+=======
+    if (in_array('Admin', $required_roles) && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
+        return;
+    }
+
+>>>>>>> 3e34b36 (newe version)
     if (!in_array($user_role, $required_roles)) {
         http_response_code(403);
         echo "Accès refusé. Vous n'avez pas les permissions nécessaires.";
@@ -32,7 +30,6 @@ function checkRole($required_roles) {
     }
 }
 
-// Get current user info
 function getCurrentUser() {
     if (!isset($_SESSION['user_id'])) {
         return null;
@@ -46,21 +43,23 @@ function getCurrentUser() {
     ];
 }
 
-// Logout function
 function logout() {
     session_destroy();
     header('Location: /3eduplus/signup.php');
     exit();
 }
 
-// Redirect based on role
 function redirectByRole($user_role = null) {
     if ($user_role === null) {
         $user_role = $_SESSION['user_role'] ?? 'Apprenant';
     }
     
     $redirects = [
+<<<<<<< HEAD
         'Admin' => '/3eduplus/dashboard/admin/index.html',
+=======
+        'Admin' => '/3eduplus/dashboard/admin/index.php',
+>>>>>>> 3e34b36 (newe version)
         'Commercial' => '/3eduplus/dashboard/commercial/index.php',
         'Pédagogique' => '/3eduplus/dashboard/pedagogique/index.php',
         'Marketing' => '/3eduplus/dashboard/marketing/index.php',
@@ -78,14 +77,13 @@ function redirectByRole($user_role = null) {
     exit();
 }
 
-// Get dashboard URL based on role
 function getDashboardUrl($user_role = null) {
     if ($user_role === null) {
         $user_role = $_SESSION['user_role'] ?? 'Apprenant';
     }
     
     $dashboards = [
-        'Admin' => 'dashboard/admin/index.html',
+        'Admin' => 'dashboard/admin/index.php',
         'Commercial' => 'dashboard/commercial/index.php',
         'Pédagogique' => 'dashboard/pedagogique/index.php',
         'Marketing' => 'dashboard/marketing/index.php',

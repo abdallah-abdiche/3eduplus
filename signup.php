@@ -2,13 +2,13 @@
 session_start();
 require_once 'config.php';
 
-// Initialize error and success messages
+
 $error_message = '';
 $success_message = '';
 $login_error = '';
 $login_success = '';
 
-// Handle registration form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     $username = isset($_POST['name']) ? trim($_POST['name']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
     $role = isset($_POST['role']) ? trim($_POST['role']) : 'Apprenant';
 
-    // Validation
+ 
     if (empty($username) || empty($email) || empty($password) || empty($wilaya) || empty($numero) || empty($date) || empty($gender) || empty($role)) {
         $error_message = '❌ Tous les champs requis doivent être remplis.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     } elseif (strlen($password) < 6) {
         $error_message = '❌ Le mot de passe doit contenir au moins 6 caractères.';
     } else {
-        // Check if email already exists
+      
         $checkEmail = $conn->prepare("SELECT user_id FROM utilisateurs WHERE Email = ?");
         $checkEmail->bind_param("s", $email);
         $checkEmail->execute();
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
         } else {
             $checkEmail->close();
             
-            // Get role_id from roles table based on role name
+          
             $roleStmt = $conn->prepare("SELECT role_id FROM roles WHERE nom_role = ?");
             $roleStmt->bind_param("s", $role);
             $roleStmt->execute();
@@ -51,10 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 $role_id = $roleRow['role_id'];
                 $roleStmt->close();
                 
-                // Hash the password
+          
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-                // Insert new user with role_id
                 $stmt = $conn->prepare("INSERT INTO utilisateurs 
                     (Nom_Complet, Mot_de_passe, Email, Wilaya, numero_tlf_utilisateur, date_registration, image_utilisateur, gender, role_id) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -76,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     }
 }
 
-// Handle login form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     $login_email = isset($_POST['login_email']) ? trim($_POST['login_email']) : '';
     $login_password = isset($_POST['login_password']) ? $_POST['login_password'] : '';
@@ -92,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
             if (password_verify($login_password, $user['Mot_de_passe'])) {
-                // Successful login
+             
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['user_email'] = $user['Email'];
                 $_SESSION['user_name'] = $user['Nom_Complet'];
                 $_SESSION['user_role'] = $user['nom_role'] ?? 'Apprenant';
                 
-                // Redirect based on role
+                
                 require_once 'auth.php';
                 redirectByRole($_SESSION['user_role']);
                 exit();
@@ -162,24 +161,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
         }
     </style>
     <script>
-        // Auto-hide validation error messages after page refresh immediately
+      
         window.addEventListener('load', function() {
             const errorAlert = document.querySelector('.alert-error');
             if (errorAlert) {
                 const errorText = errorAlert.textContent;
                 
-                // List of validation errors that should auto-hide
+               
                 const validationErrors = [
                     'Le mot de passe doit contenir au moins 6 caractères',
                     'Tous les champs requis doivent être remplis',
                     'Adresse email invalide'
                 ];
                 
-                // Check if this is a validation error
+          
                 const isValidationError = validationErrors.some(err => errorText.includes(err));
                 
                 if (isValidationError) {
-                    // Auto-hide validation errors after 4 seconds
+                  
                     setTimeout(function() {
                         errorAlert.style.animation = 'fadeOut 0.5s ease-in-out';
                         setTimeout(function() {
@@ -187,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                         }, 500);
                     }, 4000);
                 }
-                // Keep other errors (like "email already exists") visible
+                
             }
         });
     </script>
@@ -204,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                 <p>Créez votre compte et commencez votre apprentissage</p>
             </div>
 
-            <!-- Display error or success messages for signup -->
+           
             <?php if (!empty($error_message)): ?>
                 <div class="alert-message alert-error" id="signup-message">
                     <?php echo htmlspecialchars($error_message); ?>
@@ -228,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                 </button>
             </div>
 
-            <!-- LOGIN FORM -->
+            
             <form class="auth-form active" id="login-form" method="post" action="signup.php">
                 <?php if (!empty($login_error)): ?>
                     <div class="alert-message alert-error">
@@ -286,7 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                 </div>
             </form>
 
-            <!-- SIGNUP FORM -->
+           
             <form class="auth-form" id="signup-form" method="post" action="signup.php">
                 <div class="form-group">
                     <label for="signup-name">Nom complet</label>
@@ -414,43 +413,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
     </div>
 
     <script>
-        // Tab switching functionality
+      
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tabName = btn.getAttribute('data-tab');
                 
-                // Remove active class from all tabs
+                
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                // Remove active class from all forms
+         
                 document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
                 
-                // Add active class to clicked tab
+               
                 btn.classList.add('active');
-                // Add active class to corresponding form
+         
                 document.getElementById(tabName + '-form').classList.add('active');
             });
         });
 
-        // Switch tab links
+
         document.querySelectorAll('.switch-tab').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tabName = link.getAttribute('data-tab');
                 
-                // Find and click the corresponding tab button
+             
                 const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
                 if (tabBtn) tabBtn.click();
             });
         });
 
-        // Auto-hide validation error messages
+
         window.addEventListener('load', function() {
             const errorAlerts = document.querySelectorAll('.alert-error');
             errorAlerts.forEach(errorAlert => {
                 const errorText = errorAlert.textContent;
                 
-                // List of validation errors that should auto-hide
+         
                 const validationErrors = [
                     'Le mot de passe doit contenir au moins 6 caractères',
                     'Tous les champs requis doivent être remplis',
@@ -458,11 +457,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                     'Veuillez remplir tous les champs'
                 ];
                 
-                // Check if this is a validation error
+             
                 const isValidationError = validationErrors.some(err => errorText.includes(err));
                 
                 if (isValidationError) {
-                    // Auto-hide validation errors after 4 seconds
+                   
                     setTimeout(function() {
                         errorAlert.style.animation = 'fadeOut 0.5s ease-in-out';
                         setTimeout(function() {
@@ -470,7 +469,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                         }, 500);
                     }, 4000);
                 }
-                // Keep other errors (like "email already exists") visible
+              
             });
         });
     </script>

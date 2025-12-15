@@ -86,7 +86,30 @@
                                     </nav>
 
 
+<<<<<<< HEAD
                                 </aside>
+=======
+$msg = "";
+if (isset($_GET['msg'])) {
+    if ($_GET['msg'] == 'deleted') $msg = "User deleted successfully.";
+    if ($_GET['msg'] == 'error') $msg = "Error deleting user.";
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="CRUD.css">
+    <link rel="icon" href="../../LogoEdu.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <?php include 'sidebar.php'; ?>
+>>>>>>> 3e34b36 (newe version)
 
                             
                                 <main class="main-content">
@@ -118,6 +141,7 @@
                                             </d </div>
                                     </header>
 
+<<<<<<< HEAD
                                 
                                     <div class="dashboard-content">
                                     
@@ -142,6 +166,27 @@
                                     $database = "3eduplus";
                                     $servername = "localhost";
                                     $conn = new mysqli($servername, $username, $password, $database);
+=======
+                <div class="table-container">
+                    <h3>Users Management</h3>
+                    <p>Manage all registered users from this dashboard.</p>
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Wilaya</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $sql = "SELECT u.*, r.nom_role FROM utilisateurs u LEFT JOIN roles r ON u.role_id = r.role_id";
+                            $result = $conn->query($sql);
+>>>>>>> 3e34b36 (newe version)
 
                                     if ($conn->connect_error) {
                                         die("Connection failed: " . $conn->connect_error);

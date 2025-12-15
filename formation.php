@@ -64,6 +64,7 @@ if (isset($_POST['add_to_cart'])) {
                 <li><a href="formation.php" class="active">Formations</a></li>
                 <li><a href="evenements.php">Événements</a></li>
                 <li><a href="about.php">À propos</a></li>
+                <li><a href="inscription.php">Inscriptions</a></li>
             </ul>
         </nav>
 

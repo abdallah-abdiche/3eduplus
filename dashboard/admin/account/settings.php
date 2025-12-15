@@ -1,3 +1,15 @@
+<?php 
+session_start();
+require_once '../../../config.php';
+require_once '../../../auth.php';
+
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    $_SESSION['error_message'] = 'You don\'t have permission to access this page.';
+    header('Location: ../../../index.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

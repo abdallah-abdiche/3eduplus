@@ -1,3 +1,41 @@
+<<<<<<< HEAD
+=======
+<?php
+session_start();
+require_once '../../config.php';
+require_once '../../auth.php';
+
+checkAuth();
+checkRole(['Admin', 'Marketing']);
+
+// --- ANALYTICS ---
+
+// 1. Most Popular Courses
+$popular_sql = "SELECT f.titre, COUNT(pf.id) as enrolled 
+                FROM formations f 
+                LEFT JOIN paiement_formations pf ON f.formation_id = pf.formation_id 
+                GROUP BY f.formation_id 
+                ORDER BY enrolled DESC LIMIT 5";
+$popular_result = $conn->query($popular_sql);
+
+
+$revenue_cat_sql = "SELECT f.categorie, SUM(pf.prix_paye) as total_revenue
+                    FROM paiement_formations pf
+                    JOIN formations f ON pf.formation_id = f.formation_id
+                    JOIN paiements p ON pf.paiement_id = p.paiement_id
+                    WHERE p.statut = 'paid'
+                    GROUP BY f.categorie";
+$revenue_cat_result = $conn->query($revenue_cat_sql);
+
+
+$cat_labels = [];
+$cat_data = [];
+while ($row = $revenue_cat_result->fetch_assoc()) {
+    $cat_labels[] = $row['categorie'];
+    $cat_data[] = $row['total_revenue'];
+}
+?>
+>>>>>>> 3e34b36 (newe version)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,6 +163,30 @@
     </div>
      <script src="account.js"></script>
 
+<<<<<<< HEAD
+=======
+    <script>
+        const ctxOriginal = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxOriginal, {
+            type: 'doughnut',
+            data: {
+                labels: <?php echo json_encode($cat_labels); ?>,
+                datasets: [{
+                    label: 'Revenue',
+                    data: <?php echo json_encode($cat_data); ?>,
+                    backgroundColor: [
+                        '#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+    <script src="account.js"></script>
+>>>>>>> 3e34b36 (newe version)
 </body>
 </html>
 

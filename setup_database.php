@@ -1,28 +1,21 @@
 <?php
-/**
- * Database Setup Script for 3edu+
- * Run this ONCE to initialize the database with all required tables and columns
- * Access: http://localhost/3eduplus/setup_database.php
- */
 
 require_once 'config.php';
 
 $messages = [];
 $errors = [];
 
-// Check database connection
+
 if ($conn->connect_error) {
     $errors[] = "Connection failed: " . $conn->connect_error;
 } else {
     $messages[] = "✅ Database connected successfully";
 }
 
-// SQL queries to run
+
 $queries = [
-    // Disable foreign key checks temporarily
     "SET FOREIGN_KEY_CHECKS=0",
     
-    // Create roles table if not exists
     "CREATE TABLE IF NOT EXISTS roles (
         role_id INT PRIMARY KEY AUTO_INCREMENT,
         nom_role VARCHAR(100) NOT NULL UNIQUE,
@@ -30,7 +23,6 @@ $queries = [
         date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )",
     
-    // Insert default roles
     "INSERT IGNORE INTO roles (nom_role, description) VALUES 
     ('Apprenant', 'Étudiant ou apprenant'),
     ('Commercial', 'Responsable commercial'),
@@ -38,7 +30,6 @@ $queries = [
     ('Marketing', 'Responsable marketing'),
     ('Admin', 'Administrateur système')",
     
-    // Create formations table if not exists
     "CREATE TABLE IF NOT EXISTS formations (
         formation_id INT PRIMARY KEY AUTO_INCREMENT,
         titre VARCHAR(255) NOT NULL,
@@ -54,7 +45,6 @@ $queries = [
         FOREIGN KEY (instructeur_id) REFERENCES utilisateurs(user_id)
     )",
     
-    // Create inscriptions table if not exists
     "CREATE TABLE IF NOT EXISTS inscriptions (
         id INT PRIMARY KEY AUTO_INCREMENT,
         utilisateur_id INT NOT NULL,

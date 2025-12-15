@@ -6,11 +6,10 @@ require_once 'auth.php';
 checkAuth();
 $user = getCurrentUser();
 
-// Fetch cart items
 $cart_query = "SELECT p.formation_id, p.prix_unitaire, f.titre, f.prix as prix_courant
                FROM panier p
                JOIN formations f ON p.formation_id = f.formation_id
-               WHERE p.formation_id = ?
+               WHERE p.utilisateur_id = ?
                ORDER BY p.date_ajout DESC";
 $cart_stmt = $conn->prepare($cart_query);
 $cart_stmt->bind_param("i", $user['id']);
@@ -25,7 +24,6 @@ while ($item = $cart_result->fetch_assoc()) {
 }
 $cart_stmt->close();
 
-// Handle remove from cart
 if (isset($_POST['remove_item'])) {
     $item_id = (int)$_POST['item_id'];
     $delete_stmt = $conn->prepare("DELETE FROM panier WHERE id = ? AND utilisateur_id = ?");
@@ -36,7 +34,6 @@ if (isset($_POST['remove_item'])) {
     exit();
 }
 
-// Handle checkout
 if (isset($_POST['checkout'])) {
     if (count($cart_items) > 0) {
         $_SESSION['checkout_total'] = $total;
@@ -62,12 +59,34 @@ if (isset($_POST['checkout'])) {
         .header h1 { margin: 0 0 10px 0; }
         .header a { color: #007bff; text-decoration: none; }
         .header a:hover { text-decoration: underline; }
-        .cart-table { width: 100%; border-collapse: collapse; background: white; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .cart-table { width: 100%; border-collapse: collapse; background: white; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); table-layout: fixed; }
         .cart-table th { background: #f8f9fa; padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6; }
-        .cart-table td { padding: 15px; border-bottom: 1px solid #dee2e6; }
+        .cart-table td { padding: 15px; border-bottom: 1px solid #dee2e6; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; }
+        .cart-table td:first-child { max-width: 400px; }
         .cart-table tr:hover { background: #f9f9f9; }
-        .remove-btn { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
-        .remove-btn:hover { background: #c82333; }
+        .remove-btn { 
+            background: linear-gradient(135deg, #dc3545, #c82333); 
+            color: white; 
+            border: none; 
+            padding: 27px 65px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+        }
+        .remove-btn:hover { 
+            background: linear-gradient(135deg, #c82333, #a71d2a); 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 53, 69, 0.45);
+        }
+        .remove-btn i {
+            font-size: 16px;
+        }
         .cart-summary { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: right; }
         .summary-row { display: flex; justify-content: flex-end; margin: 10px 0; }
         .summary-total { font-size: 24px; font-weight: bold; color: #007bff; border-top: 2px solid #dee2e6; padding-top: 15px; margin-top: 15px; }
@@ -81,7 +100,7 @@ if (isset($_POST['checkout'])) {
     <div class="container">
         <div class="header">
             <h1>Votre Panier</h1>
-            <a href="courses.php"><i class="fas fa-arrow-left"></i> Retour aux formations</a>
+            <a href="formation.php"><i class="fas fa-arrow-left"></i> Retour aux formations</a>
         </div>
 
         <?php if (count($cart_items) > 0): ?>
@@ -134,7 +153,7 @@ if (isset($_POST['checkout'])) {
             <div class="empty-message">
                 <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 20px; display: block;"></i>
                 <p style="font-size: 18px;">Votre panier est vide.</p>
-                <a href="courses.php" style="color: #007bff; text-decoration: none; margin-top: 20px; display: inline-block;">Consulter nos formations</a>
+                <a href="formation.php" style="color: #007bff; text-decoration: none; margin-top: 20px; display: inline-block;">Consulter nos formations</a>
             </div>
         <?php endif; ?>
     </div>

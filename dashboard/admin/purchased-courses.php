@@ -167,6 +167,7 @@ $result = $conn->query($sql);
             </div>
         </main>
     </div>
-</body>
+   <script src="account.js"></script>
+ </body>
 </html>
 <?php $conn->close(); ?>

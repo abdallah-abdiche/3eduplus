@@ -81,6 +81,7 @@ if (isset($_POST['checkout'])) {
                 <li><a href="formation.php">Formations</a></li>
                 <li><a href="evenements.php">Événements</a></li>
                 <li><a href="about.php" class="active">À propos</a></li>
+                <li><a href="inscription.php">Inscription</a></li>
             </ul>
         </nav>
 

@@ -3,29 +3,24 @@ session_start();
 require_once '../../config.php';
 require_once '../../auth.php';
 
-// Check if user is logged in
 checkAuth();
 
-// Check if user is pedagogique
-checkRole(['Pedagogique']);
+checkRole(['Pédagogique']);
 
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
 $user_email = $_SESSION['user_email'];
 
-// Get total formations
 $formations_query = "SELECT COUNT(*) as total FROM formations";
 $result = $conn->query($formations_query);
 $formations_stats = $result->fetch_assoc();
 $total_formations = $formations_stats['total'] ?? 0;
 
-// Get total enrollments
 $enrollments_query = "SELECT COUNT(*) as total FROM inscriptions";
 $result = $conn->query($enrollments_query);
 $enrollments_stats = $result->fetch_assoc();
 $total_enrollments = $enrollments_stats['total'] ?? 0;
 
-// Get total students (Apprenant role)
 $students_query = "SELECT COUNT(*) as total FROM utilisateurs u 
                    LEFT JOIN roles r ON u.role_id = r.role_id 
                    WHERE r.nom_role = 'Apprenant'";
@@ -33,10 +28,8 @@ $result = $conn->query($students_query);
 $students_stats = $result->fetch_assoc();
 $total_students = $students_stats['total'] ?? 0;
 
-// Calculate average students per course
 $avg_per_course = $total_formations > 0 ? round($total_enrollments / $total_formations, 1) : 0;
 
-// Get all formations with enrollment count
 $all_formations_query = "SELECT f.formation_id, f.titre, f.description, f.duree, f.prix, f.niveau,
                          COUNT(i.session_id) as enrollments
                          FROM formations f
@@ -46,7 +39,6 @@ $all_formations_query = "SELECT f.formation_id, f.titre, f.description, f.duree,
 $formations_result = $conn->query($all_formations_query);
 $all_formations = $formations_result->fetch_all(MYSQLI_ASSOC);
 
-// Get recent enrollments
 $recent_enrollments_query = "SELECT i.date_inscription, u.Nom_Complet, u.Email, f.titre
                              FROM inscriptions i
                              JOIN utilisateurs u ON i.user_id = u.user_id
@@ -56,7 +48,6 @@ $recent_enrollments_query = "SELECT i.date_inscription, u.Nom_Complet, u.Email, 
 $recent_result = $conn->query($recent_enrollments_query);
 $recent_enrollments = $recent_result->fetch_all(MYSQLI_ASSOC);
 
-// Get course level distribution
 $level_query = "SELECT niveau, COUNT(*) as count FROM formations GROUP BY niveau ORDER BY count DESC";
 $level_result = $conn->query($level_query);
 $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
@@ -74,7 +65,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <div class="nav-brand">
@@ -87,6 +77,9 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
                 </a>
                 <a href="../../formation.php" class="nav-link">
                     <i class="fas fa-book"></i> Cours
+                </a>
+                <a href="events.php" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i> Événements
                 </a>
                 <a href="../../index.php" class="nav-link">
                     <i class="fas fa-globe"></i> Site
@@ -111,9 +104,7 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container dashboard-container">
-        <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="welcome-content">
                 <h1>Bienvenue, <span class="highlight"><?php echo htmlspecialchars(explode(' ', $user_name)[0]); ?>!</span></h1>
@@ -126,7 +117,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
             </div>
         </section>
 
-        <!-- KPI Cards -->
         <section class="stats-section">
             <div class="stat-card">
                 <div class="stat-icon" style="background: #fff3e0;">
@@ -169,9 +159,7 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
             </div>
         </section>
 
-        <!-- Main Content Grid -->
         <div class="dashboard-grid">
-            <!-- Course Level Distribution -->
             <section class="dashboard-section">
                 <div class="section-header">
                     <h2><i class="fas fa-layer-group"></i> Niveaux des Formations</h2>
@@ -206,7 +194,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
                 <?php endif; ?>
             </section>
 
-            <!-- All Formations -->
             <section class="dashboard-section">
                 <div class="section-header">
                     <h2><i class="fas fa-book-open"></i> Toutes les Formations</h2>
@@ -238,7 +225,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
             </section>
         </div>
 
-        <!-- Recent Enrollments -->
         <section class="dashboard-section">
             <div class="section-header">
                 <h2><i class="fas fa-user-graduate"></i> Inscriptions Récentes</h2>
@@ -279,7 +265,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
             <?php endif; ?>
         </section>
 
-        <!-- User Info Section -->
         <section class="dashboard-section user-info-section">
             <div class="section-header">
                 <h2><i class="fas fa-user-circle"></i> Informations Professionnelles</h2>
@@ -308,7 +293,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -337,7 +321,6 @@ $level_distribution = $level_result->fetch_all(MYSQLI_ASSOC);
     </footer>
 
     <script>
-        // Dropdown menu functionality
         document.addEventListener('DOMContentLoaded', function() {
             const userAvatar = document.querySelector('.user-avatar');
             const dropdownMenu = document.querySelector('.dropdown-menu');

@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-// Admin check - vital for security
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // If not admin via session flag, check role just in case (redundant but safe) or redirect
     if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
          header("Location: /3eduplus/signup.php"); 
          exit();
@@ -20,10 +18,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle Add Course
 $message = "";
 
-// Check for messages from redirects
 if (isset($_GET['msg'])) {
     if ($_GET['msg'] == 'created') $message = "New course created successfully";
     if ($_GET['msg'] == 'deleted') $message = "Course deleted successfully";
@@ -89,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
 </head>
 <body>
     <div class="dashboard-container">
+<<<<<<< HEAD
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -134,6 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
                 </div>
             </nav>
         </aside>
+=======
+        <?php include 'sidebar.php'; ?>
+>>>>>>> 3e34b36 (newe version)
 
         <main class="main-content">
             <header class="dashboard-header">
@@ -155,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
                     </div>
                 <?php endif; ?>
 
+<<<<<<< HEAD
                 <!-- Add Course Form -->
                 <div class="form-container">
                     <h3>Add New Course</h3>
@@ -193,9 +194,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
                         </div>
                         <button type="submit" name="add_course" class="btn-submit">Add Course</button>
                     </form>
+=======
+                <div class="action-bar" style="margin-bottom: 20px; text-align: right;">
+                    <a href="add_course.php" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Course
+                    </a>
+>>>>>>> 3e34b36 (newe version)
                 </div>
 
-                <!-- Courses Table -->
                 <div class="table-container">
                     <table width="100%" border="1" class="users-table" cellpadding="10" cellspacing="0">
                         <thead>
@@ -218,7 +224,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
                                     $imgUrl = $row['formationImageUrl'];
-                                    // Check if it's an external URL (starts with http) or local upload
                                     if (strpos($imgUrl, 'http') === 0) {
                                         $imagePath = $imgUrl;
                                     } elseif ($imgUrl) {
@@ -233,6 +238,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
                                     echo "<td>" . $row['categorie'] . "</td>";
                                     echo "<td>" . $row['prix'] . " €</td>";
                                     echo "<td>" . $row['niveau'] . "</td>";
+<<<<<<< HEAD
+=======
+                                    
+                                    $videoLink = "";
+                                    if (!empty($row['video_url'])) {
+                                        $videoLink = "<a href='../../" . $row['video_url'] . "' target='_blank' style='color: #2563eb;'><i class='fas fa-video'></i> View</a>";
+                                        if (strpos($row['video_url'], 'http') === 0) {
+                                            $videoLink = "<a href='" . $row['video_url'] . "' target='_blank' style='color: #2563eb;'><i class='fas fa-video'></i> View</a>";
+                                        }
+                                    } else {
+                                        $videoLink = "<span style='color: #999;'>No Video</span>";
+                                    }
+                                    echo "<td>" . $videoLink . "</td>";
+                                    
+>>>>>>> 3e34b36 (newe version)
                                     echo "<td>" . $row['date_creation'] . "</td>";
                                     echo "<td>
                                             <a href='delete_course.php?id=" . $row['formation_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>
@@ -250,5 +270,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_course'])) {
         </main>
     </div>
 </body>
+<script src="account.js"></script>
 </html>
 <?php $conn->close(); ?>

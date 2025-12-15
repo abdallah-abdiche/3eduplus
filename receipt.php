@@ -9,7 +9,7 @@ $user = getCurrentUser();
 $receipt_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($receipt_id === 0) {
-    header('Location: courses.php');
+    header('Location: formation.php');
     exit();
 }
 
@@ -136,10 +136,10 @@ $receipt_stmt->close();
         </div>
 
         <div class="action-buttons">
-            <a href="dashboard/apprenant/index.php" class="btn btn-primary">
-                <i class="fas fa-tachometer-alt"></i> Aller au tableau de bord
+            <a href="inscription.php" class="btn btn-primary">
+                <i class="fas fa-graduation-cap"></i> Voir mes inscriptions
             </a>
-            <a href="courses.php" class="btn btn-secondary">
+            <a href="formation.php" class="btn btn-secondary">
                 <i class="fas fa-book"></i> Voir autres formations
             </a>
             <button class="btn btn-secondary" onclick="window.print()">

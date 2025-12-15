@@ -1,3 +1,16 @@
+<?php 
+session_start();
+require_once '../../../config.php';
+require_once '../../../auth.php';
+
+if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+    $_SESSION['error_message'] = 'You don\'t have permission to access this page.';
+    header('Location: ../../../index.php');
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +23,8 @@
     <div class="container">
         <div class="profile-sidebar">
             <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31" alt="Profile" class="profile-image">
-            <div class="profile-name">account</div>
-            <div class="profile-email">admin@gmail.com</div>
+            <div class="profile-name" <?php echo $_SESSION['username']; ?>>$_SESSION['username'];</div>
+            <div class="profile-email" <?php echo $_SESSION['email']; ?>>$_SESSION['email'];</div>
         </div>
 
         <div class="main-content">

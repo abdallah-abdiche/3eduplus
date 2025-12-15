@@ -33,7 +33,8 @@ if (isset($_POST['process_payment'])) {
         
         // Add payment-formation relationships and create enrollments
         $formation_stmt = $conn->prepare("INSERT INTO paiement_formations (paiement_id, formation_id, prix_paye) VALUES (?, ?, ?)");
-        $enrollment_stmt = $conn->prepare("INSERT INTO inscriptions (utilisateur_id, formation_id) VALUES (?, ?)");
+        $enrollment_stmt = $conn->prepare("INSERT INTO inscriptions (user_id, formation_id, statut_inscription) VALUES (?, ?, ?)");
+        $status = "Validé";
         
         foreach ($items as $item) {
             $formation_id = $item['formation_id'];
@@ -42,7 +43,7 @@ if (isset($_POST['process_payment'])) {
             $formation_stmt->bind_param("iid", $payment_id, $formation_id, $prix);
             $formation_stmt->execute();
             
-            $enrollment_stmt->bind_param("ii", $user['id'], $formation_id);
+            $enrollment_stmt->bind_param("iis", $user['id'], $formation_id, $status);
             $enrollment_stmt->execute();
         }
         $formation_stmt->close();
