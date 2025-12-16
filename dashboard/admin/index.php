@@ -3,8 +3,10 @@ session_start();
 require_once '../../config.php';
 require_once '../../auth.php';
 
+// Check auth and role
 checkAuth();
 
+// If user is not Admin, redirect them to their specific dashboard instead of showing access denied
 if (($_SESSION['user_role'] ?? '') !== 'Admin' && !($_SESSION['is_admin'] ?? false)) {
     redirectByRole();
 }
@@ -13,16 +15,21 @@ checkRole(['Admin']);
 
 $user_name = $_SESSION['user_name'];
 
-$students_query = "SELECT COUNT(*) as total FROM utilisateurs u  
+// --- FETCH DASHBOARD DATA ---
+
+// 1. Total Students (Role = Apprenant)
+$students_query = "SELECT COUNT(*) as total FROM utilisateurs u 
                    LEFT JOIN roles r ON u.role_id = r.role_id 
                    WHERE r.nom_role = 'Apprenant'";
 $students_result = $conn->query($students_query);
 $total_students = $students_result->fetch_assoc()['total'];
 
+// 2. Course Sales (Count of purchased courses in inscriptions)
 $sales_query = "SELECT COUNT(*) as total FROM inscriptions";
 $sales_result = $conn->query($sales_query);
 $total_sales = $sales_result->fetch_assoc()['total'];
 
+// 3. Monthly Revenue (Current Month)
 $current_month = date('m');
 $current_year = date('Y');
 $revenue_query = "SELECT SUM(montant) as revenue FROM paiements 
@@ -30,10 +37,13 @@ $revenue_query = "SELECT SUM(montant) as revenue FROM paiements
 $revenue_result = $conn->query($revenue_query);
 $monthly_revenue = $revenue_result->fetch_assoc()['revenue'] ?? 0;
 
+// 4. Target Calculation (Example target: 50% growth from last month or static)
+// For now, let's use a static target or just display the revenue
 $target_revenue = 200000; // Example static target 200,000 DA
 $progress_percentage = $target_revenue > 0 ? ($monthly_revenue / $target_revenue) * 100 : 0;
 $progress_percentage = min(100, round($progress_percentage, 1));
 
+// 5. Chart Data: Monthly Sales (Last 6 months)
 $chart_months = [];
 $chart_sales = [];
 for ($i = 5; $i >= 0; $i--) {
@@ -139,9 +149,11 @@ for ($i = 5; $i >= 0; $i--) {
     </div>
     
     <script>
+        // Pass PHP data to JS
         const monthLabels = <?php echo json_encode($chart_months); ?>;
         const salesData = <?php echo json_encode($chart_sales); ?>;
 
+        // Chart.js Configuration
         const ctx = document.getElementById('monthlySalesChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(37, 99, 235, 0.5)'); // #2563eb
@@ -191,6 +203,5 @@ for ($i = 5; $i >= 0; $i--) {
         });
     </script>
     <script src="dashboard.js"></script>
-    <script src="account.js"></script>
 </body>
 </html>

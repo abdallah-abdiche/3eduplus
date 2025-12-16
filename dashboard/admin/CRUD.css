@@ -1,46 +1,157 @@
+/* Modern Blue Theme Table Styles */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+}
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    font-family: Arial, sans-serif;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+thead th {
+  background-color: #eff6ff;
+  /* Light blue background for header */
+  color: #1e3a8a;
+  /* Dark blue text */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 16px;
+  border-bottom: 2px solid #bfdbfe;
+  text-align: left;
 }
 
-th {
-    background-color: #007BFF;
-    color: white;
+tbody td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+  vertical-align: middle;
+  font-size: 0.9rem;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9;
+tbody tr:last-child td {
+  border-bottom: none;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+tbody tr:hover {
+  background-color: #f8fafc;
 }
 
+/* Button Upgrades */
 .btn {
-    padding: 5px 10px;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-primary {
-    background-color: #007BFF;
-    color: white;
+  background-color: #2563eb;
+  /* Primary Blue */
+  color: white;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
 }
 
 .btn-danger {
-    background-color: #DC3545;
-    color: white;
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.btn-danger:hover {
+  background-color: #fca5a5;
+  color: #991b1b;
 }
 
 .btn-sm {
-    font-size: 0.8em;
+  padding: 6px 12px;
+  font-size: 0.75em;
+}
+
+/* Form inputs matching the theme */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #334155;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Image Thumbnails */
+.course-img-thumb,
+.user-avatar-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+}
+
+/* Action Bar - Fixed position for Add button */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Make dashboard content scrollable */
+.dashboard-content {
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .action-bar {
+    justify-content: flex-start;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 800px;
+  }
 }

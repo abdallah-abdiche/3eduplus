@@ -25,9 +25,9 @@ while ($item = $cart_result->fetch_assoc()) {
 $cart_stmt->close();
 
 if (isset($_POST['remove_item'])) {
-    $item_id = (int)$_POST['item_id'];
-    $delete_stmt = $conn->prepare("DELETE FROM panier WHERE id = ? AND utilisateur_id = ?");
-    $delete_stmt->bind_param("ii", $item_id, $user['id']);
+    $formation_id = (int)$_POST['item_id'];
+    $delete_stmt = $conn->prepare("DELETE FROM panier WHERE formation_id = ? AND utilisateur_id = ?");
+    $delete_stmt->bind_param("ii", $formation_id, $user['id']);
     $delete_stmt->execute();
     $delete_stmt->close();
     header('Location: cart.php');

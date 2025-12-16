@@ -50,15 +50,15 @@
             <p class="nav-section-title">OTHERS</p>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="../../index.php" class="nav-link">
-                        <i class="fas fa-home nav-icon"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="../../logout.php" class="nav-link">
                         <i class="fas fa-sign-out-alt nav-icon"></i>
                         <span>Logout</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../index.php" class="nav-link">
+                        <i class="fas fa-home nav-icon"></i>
+                        <span>Home</span>
                     </a>
                 </li>
             </ul>

@@ -1,4 +1,3 @@
-
 <?php 
 $username="root";
 $password = "";

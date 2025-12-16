@@ -16,13 +16,12 @@ function checkRole($required_roles) {
         $required_roles = [$required_roles];
     }
     
-<<<<<<< HEAD
-=======
+
+
     if (in_array('Admin', $required_roles) && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
         return;
     }
 
->>>>>>> 3e34b36 (newe version)
     if (!in_array($user_role, $required_roles)) {
         http_response_code(403);
         echo "Accès refusé. Vous n'avez pas les permissions nécessaires.";
@@ -55,11 +54,9 @@ function redirectByRole($user_role = null) {
     }
     
     $redirects = [
-<<<<<<< HEAD
-        'Admin' => '/3eduplus/dashboard/admin/index.html',
-=======
+
+
         'Admin' => '/3eduplus/dashboard/admin/index.php',
->>>>>>> 3e34b36 (newe version)
         'Commercial' => '/3eduplus/dashboard/commercial/index.php',
         'Pédagogique' => '/3eduplus/dashboard/pedagogique/index.php',
         'Marketing' => '/3eduplus/dashboard/marketing/index.php',

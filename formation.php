@@ -17,23 +17,51 @@ if ($result && $result->num_rows > 0) {
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_id']);
 $user_name = $is_logged_in ? ($_SESSION['user_name'] ?? 'Utilisateur') : '';
+$user_id = $is_logged_in ? $_SESSION['user_id'] : 0;
 
-// Get cart count from session
-$cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+// Get cart count from database
+$cart_count = 0;
+if ($is_logged_in) {
+    $count_sql = "SELECT COUNT(*) as count FROM panier WHERE utilisateur_id = ?";
+    $count_stmt = $conn->prepare($count_sql);
+    $count_stmt->bind_param("i", $user_id);
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    if ($count_result->num_rows > 0) {
+        $cart_count = $count_result->fetch_assoc()['count'];
+    }
+    $count_stmt->close();
+}
 
 // Handle add to cart via AJAX
-if (isset($_POST['add_to_cart'])) {
+if (isset($_POST['add_to_cart']) && $is_logged_in) {
     $formation_id = (int)$_POST['formation_id'];
     
-    if (!isset($_SESSION['cart'])) {
-        $_SESSION['cart'] = [];
-    }
+    // Get price of the formation
+    $price_query = "SELECT prix FROM formations WHERE formation_id = ?";
+    $price_stmt = $conn->prepare($price_query);
+    $price_stmt->bind_param("i", $formation_id);
+    $price_stmt->execute();
+    $price_result = $price_stmt->get_result();
+    $price = $price_result->fetch_assoc()['prix'] ?? 0;
+    $price_stmt->close();
     
-    if (!in_array($formation_id, $_SESSION['cart'])) {
-        $_SESSION['cart'][] = $formation_id;
-    }
+    // Insert into panier (IGNORE to avoid duplicates)
+    $insert_sql = "INSERT IGNORE INTO panier (utilisateur_id, formation_id, prix_unitaire) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($insert_sql);
+    $stmt->bind_param("iid", $user_id, $formation_id, $price);
+    $stmt->execute();
+    $stmt->close();
     
-    echo json_encode(['success' => true, 'cart_count' => count($_SESSION['cart'])]);
+    // Get new count
+    $count_sql = "SELECT COUNT(*) as count FROM panier WHERE utilisateur_id = ?";
+    $count_stmt = $conn->prepare($count_sql);
+    $count_stmt->bind_param("i", $user_id);
+    $count_stmt->execute();
+    $new_count = $count_stmt->get_result()->fetch_assoc()['count'];
+    $count_stmt->close();
+    
+    echo json_encode(['success' => true, 'cart_count' => $new_count]);
     exit();
 }
 ?>

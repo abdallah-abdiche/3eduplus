@@ -6,7 +6,8 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
+  /* Slightly cooler grey/blue tint */
   color: #1e293b;
   overflow-x: hidden;
 }
@@ -19,8 +20,9 @@ body {
 
 .sidebar {
   width: 280px;
-  background: #ffffff;
-  border-right: 1px solid #e2e8f0;
+  background: #4f46e5;
+  /* SlothUI Indigo */
+  border-right: none;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -30,8 +32,8 @@ body {
 }
 
 .sidebar-header {
-  
-  border-bottom: 1px solid #e2e8f0;
+
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
 }
 
 .logo {
@@ -49,7 +51,7 @@ body {
 .logo-text {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #ffffff;
 }
 
 .sidebar-nav {
@@ -64,7 +66,8 @@ body {
 .nav-section-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #94a3b8;
+  color: #a5b4fc;
+  /* Light indigo text */
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0 1.5rem;
@@ -84,7 +87,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1.5rem;
-  color: #64748b;
+  color: #e0e7ff;
   text-decoration: none;
   font-size: 0.9375rem;
   transition: all 0.2s ease;
@@ -96,13 +99,20 @@ body {
 }
 
 .nav-link:hover {
-  background-color: #f1f5f9;
-  color: #1e293b;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 .nav-item.active .nav-link {
-  background-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
+  box-shadow: none;
+  border-radius: 8px;
+  /* Rounded all around */
+  border-left: none;
+  margin: 0 1rem;
+  /* Indent active item slightly */
+  width: auto;
 }
 
 .nav-arrow {
@@ -137,8 +147,9 @@ body {
 }
 
 .nav-submenu-link.active {
-  background-color: #3b82f6;
-  color: #ffffff;
+  color: #2563eb;
+  font-weight: 600;
+  background-color: #eff6ff;
 }
 
 /*.sidebar-promo {
@@ -171,6 +182,8 @@ body {
   margin-left: 280px;
   display: flex;
   flex-direction: column;
+  max-width: calc(100vw - 280px);
+  overflow-x: hidden;
 }
 
 
@@ -181,6 +194,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 12px;
+  margin: 1rem 2rem 0 2rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -323,6 +339,8 @@ body {
 .dashboard-content {
   padding: 2rem;
   flex: 1;
+  overflow-x: auto;
+  width: 100%;
 }
 
 
@@ -651,119 +669,118 @@ body {
 
 @media (max-width: 768px) {
   .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 260px;
   }
 
   .sidebar.open {
-      transform: translateX(0);
+    transform: translateX(0);
   }
 
   .main-content {
-      margin-left: 0;
+    margin-left: 0;
   }
 
   .dashboard-header {
-      padding: 1rem;
-      flex-wrap: wrap;
-      gap: 1rem;
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .header-left {
-      order: 1;
+    order: 1;
   }
 
   .header-center {
-      order: 3;
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
 
   .header-right {
-      order: 2;
-      gap: 0.5rem;
+    order: 2;
+    gap: 0.5rem;
   }
 
   .user-profile .user-name {
-      display: none;
+    display: none;
   }
 
   .metrics-grid {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 
   .monthly-target {
-      grid-column: span 1;
+    grid-column: span 1;
   }
 
   .dashboard-content {
-      padding: 1rem;
+    padding: 1rem;
   }
 
   .chart-body {
-      height: 250px;
+    height: 250px;
   }
 
   .target-stats {
-      flex-direction: column;
-      gap: 1rem;
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard-header {
-      padding: 0.75rem;
+    padding: 0.75rem;
   }
 
   .header-logo {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 
   .search-box {
-      max-width: 100%;
+    max-width: 100%;
   }
 
   .search-shortcut {
-      display: none;
+    display: none;
   }
 
   .metric-card {
-      padding: 1rem;
+    padding: 1rem;
   }
 
   .metric-value {
-      font-size: 1.5rem;
+    font-size: 1.5rem;
   }
 
   .chart-card {
-      padding: 1rem;
+    padding: 1rem;
   }
 
   .chart-body {
-      height: 200px;
+    height: 200px;
   }
 
   .circular-progress {
-      width: 100px;
-      height: 100px;
+    width: 100px;
+    height: 100px;
   }
 
   .progress-ring {
-      width: 100px;
-      height: 100px;
+    width: 100px;
+    height: 100px;
   }
 
   .progress-ring-circle-bg,
   .progress-ring-circle {
-      r: 44;
-      cx: 50;
-      cy: 50;
+    r: 44;
+    cx: 50;
+    cy: 50;
   }
 
   .progress-percentage {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 }
-

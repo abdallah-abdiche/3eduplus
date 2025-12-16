@@ -452,8 +452,7 @@ $count_stmt->close();
             </div>
         </div>
     </footer>
-
-    <script>
+   <script>
     document.querySelector('.user-btn').addEventListener('click', function(e){
       e.stopPropagation();
       this.parentElement.classList.toggle('open');

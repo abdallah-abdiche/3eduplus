@@ -1,105 +1,5 @@
-<<<<<<< HEAD
 -- Database schema for 3eduplus
--- Run these queries in phpMyAdmin or MySQL CLI to set up the application
-
--- Create roles table
-CREATE TABLE IF NOT EXISTS roles (
-    role_id INT PRIMARY KEY AUTO_INCREMENT,
-    nom_role VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Insert default roles
-INSERT IGNORE INTO roles (nom_role, description) VALUES
-('Apprenant', 'Étudiant ou apprenant'),
-('Commercial', 'Responsable commercial'),
-('Pédagogique', 'Formateur ou instructeur'),
-('Marketing', 'Responsable marketing'),
-('Admin', 'Administrateur système');
-
--- Alter utilisateurs table to add role_id column (if not exists)
-ALTER TABLE utilisateurs ADD COLUMN role_id INT DEFAULT NULL;
-ALTER TABLE utilisateurs ADD FOREIGN KEY (role_id) REFERENCES roles(role_id);
-
-CREATE TABLE IF NOT EXISTS formations (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    titre VARCHAR(255) NOT NULL,
-    description TEXT,
-    categorie VARCHAR(100),
-    prix DECIMAL(10, 2) NOT NULL,
-    duree VARCHAR(50),
-    niveau ENUM('Débutant', 'Intermédiaire', 'Avancé') DEFAULT 'Débutant',
-    image_url VARCHAR(255),
-    instructeur_id INT,
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    date_mise_a_jour TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (instructeur_id) REFERENCES utilisateurs(id)
-);
-
--- Create inscriptions table (Enrollments)
-CREATE TABLE IF NOT EXISTS inscriptions (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    formation_id INT NOT NULL,
-    date_inscription TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    statut ENUM('En cours', 'Complétée', 'Abandonnée') DEFAULT 'En cours',
-    progression INT DEFAULT 0,
-    date_completion TIMESTAMP NULL,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id),
-    FOREIGN KEY (formation_id) REFERENCES formations(id),
-    UNIQUE KEY unique_inscription (utilisateur_id, formation_id)
-);
-
--- Create panier table (Shopping Cart)
-CREATE TABLE IF NOT EXISTS panier (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    formation_id INT NOT NULL,
-    quantite INT DEFAULT 1,
-    prix_unitaire DECIMAL(10, 2),
-    date_ajout TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id),
-    FOREIGN KEY (formation_id) REFERENCES formations(id),
-    UNIQUE KEY unique_panier (utilisateur_id, formation_id)
-);
-
--- Create paiements table (Payments)
-CREATE TABLE IF NOT EXISTS paiements (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    montant_total DECIMAL(10, 2) NOT NULL,
-    methode_paiement VARCHAR(100),
-    statut_paiement ENUM('En attente', 'Complété', 'Échoué', 'Remboursé') DEFAULT 'Complété',
-    date_paiement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    reference_transaction VARCHAR(100) UNIQUE,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
-);
-
--- Create reçus table (Receipts)
-CREATE TABLE IF NOT EXISTS recus (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    paiement_id INT NOT NULL,
-    utilisateur_id INT NOT NULL,
-    numero_recu VARCHAR(50) UNIQUE NOT NULL,
-    formations_achetees TEXT,
-    montant_total DECIMAL(10, 2),
-    date_emission TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    contenu_html LONGTEXT,
-    FOREIGN KEY (paiement_id) REFERENCES paiements(id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
-);
-
--- Create paiement_formations junction table (Payment-Course mapping)
-CREATE TABLE IF NOT EXISTS paiement_formations (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    paiement_id INT NOT NULL,
-    formation_id INT NOT NULL,
-    prix_paye DECIMAL(10, 2),
-    FOREIGN KEY (paiement_id) REFERENCES paiements(id),
-    FOREIGN KEY (formation_id) REFERENCES formations(id)
-);
-=======
+-- This is the complete and merged database schema
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -145,7 +45,7 @@ INSERT INTO `formations` (`formation_id`, `titre`, `description`, `categorie`, `
 (3, 'Marketing Digital & Stratégies Growth\nPar Léa Fontaine\nBoostez votre visibilité en ligne avec les techniques modernes de SEO, SEA et campagnes sociales.', NULL, 'Marketing Digital', 499.00, 'Débutant', '5', '2025-12-07 17:25:01', NULL, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.uFCouXWjlUh4jGYbUAsn-gHaEK%3Fpid%3DApi&f=1&ipt=92298d239f50df49fac30e71b3cf67f69f8c281c4acb55f8d765da70e69a5d60&ipo=images'),
 (4, 'Cybersécurité & Protection des Systèmes\r\nPar Antoine Leroy\r\nComprenez les menaces actuelles et apprenez à sécuriser vos applications et infrastructures.', NULL, 'Cybersécurité ', 1099.00, 'Intermédiaire', '9', '2025-12-07 17:25:49', NULL, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.suXaZTYF4oHdamg4njQvvwHaDe%3Fpid%3DApi&f=1&ipt=368448d1f5b48308eca4fcb933d079d17d8f2f28729edeb4aace854f95ae3d86&ipo=images'),
 (5, 'Data Science & Analyse de Données\r\nPar Karim Haddad\r\nDominez Python, Pandas et les modèles prédictifs pour transformer vos données en décisions.', NULL, 'Data Science', 999.00, 'Intermédiaire', '9', '2025-12-07 17:26:33', NULL, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.oBFcCHjC3lKn-dTmafYLbAHaFr%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=d28d91763e67bc881a2be98415f8608dc94a4de77559bb35244ce7cfd3552322&ipo=images'),
-(6, 'Création d’Applications Mobile\r\nPar Sofia Morel\r\nDéveloppez des apps performantes avec Flutter et Dart, du design à la publication.', NULL, 'Applications Mobile', 799.00, 'Intermédiaire', '8', '2025-12-07 17:27:25', NULL, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.nOiqIEoh5pcWAY_uRysELAHaDt%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=d862f729b83a4c709c3795a5daf23498d3e30e7ecb785941708414ad22c6046e&ipo=images'),
+(6, 'Création d'Applications Mobile\r\nPar Sofia Morel\r\nDéveloppez des apps performantes avec Flutter et Dart, du design à la publication.', NULL, 'Applications Mobile', 799.00, 'Intermédiaire', '8', '2025-12-07 17:27:25', NULL, 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.nOiqIEoh5pcWAY_uRysELAHaDt%3Fcb%3Ducfimg2%26pid%3DApi%26ucfimg%3D1&f=1&ipt=d862f729b83a4c709c3795a5daf23498d3e30e7ecb785941708414ad22c6046e&ipo=images'),
 (7, 'Data science', 'super advanced', 'e.g.Developper', 5000.00, 'Intermédiaire', '10', '2025-12-14 11:58:22', NULL, 'uploads/courses/Capture d\'écran 2025-07-02 084424.png'),
 (10, 'cyber ', 'test', 'web', 1000.00, 'Avancé', '20', '2025-12-14 11:59:30', NULL, 'uploads/courses/Capture d\'écran 2025-07-01 211550.png'),
 (11, 'test1', 's', '32132', 222.00, 'Débutant', '22', '2025-12-14 11:59:58', NULL, ''),
@@ -165,7 +65,8 @@ CREATE TABLE `inscriptions` (
   `statut_inscription` varchar(50) DEFAULT NULL,
   `date_inscription` datetime DEFAULT current_timestamp(),
   `user_id` int(11) DEFAULT NULL,
-  `session_id` int(11) DEFAULT NULL
+  `session_id` int(11) DEFAULT NULL,
+  `formation_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
@@ -455,6 +356,3 @@ ALTER TABLE `temoignages`
 ALTER TABLE `utilisateurs`
   ADD CONSTRAINT `fk_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE SET NULL;
 COMMIT;
-
-
->>>>>>> 3e34b36 (newe version)

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 session_start();
 require_once '../../config.php';
@@ -18,7 +16,7 @@ $popular_sql = "SELECT f.titre, COUNT(pf.id) as enrolled
                 ORDER BY enrolled DESC LIMIT 5";
 $popular_result = $conn->query($popular_sql);
 
-
+// 2. Revenue by Category
 $revenue_cat_sql = "SELECT f.categorie, SUM(pf.prix_paye) as total_revenue
                     FROM paiement_formations pf
                     JOIN formations f ON pf.formation_id = f.formation_id
@@ -27,7 +25,7 @@ $revenue_cat_sql = "SELECT f.categorie, SUM(pf.prix_paye) as total_revenue
                     GROUP BY f.categorie";
 $revenue_cat_result = $conn->query($revenue_cat_sql);
 
-
+// Prepare data for JS
 $cat_labels = [];
 $cat_data = [];
 while ($row = $revenue_cat_result->fetch_assoc()) {
@@ -35,136 +33,69 @@ while ($row = $revenue_cat_result->fetch_assoc()) {
     $cat_data[] = $row['total_revenue'];
 }
 ?>
->>>>>>> 3e34b36 (newe version)
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - 3edu+</title>
+    <title>Reports - Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="../LogoEdu.png" type="image/png">
+    <link rel="stylesheet" href="CRUD.css">
+    <link rel="icon" href="../../LogoEdu.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
     <div class="dashboard-container">
-      
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <img src="../LogoEdu.png" alt="3edu+ Logo">
-                
-                </div>
-            </div>
+        <?php include 'sidebar.php'; ?>
 
-              <nav class="sidebar-nav">
-                <div class="nav-section">
-                    <p class="nav-section-title">MENU</p>
-                    <ul class="nav-menu">
-                        <li class="nav-item">
-                            <a href="index.html" class="nav-link">
-                                <i class="fas fa-chevron-up nav-arrow"></i>
-                                <span>Dashboard</span>
-                            </a>
-                          
-                        </li>
-                        <li class="nav-item">
-                            <a href="users.php" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Users</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="courses.php" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Courses</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="purchased-courses.php" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Inscriptions</span>
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a href="reports.php" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Reports</span>
-                            </a>
-                        </li>
-                       
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <p class="nav-section-title">OTHERS</p>
-                    <ul class="nav-menu">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Charts</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>UI Elements</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-chevron-down nav-arrow"></i>
-                                <span>Authentication</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <div class="sidebar-promo">
-                <div class="promo-card">
-                    <h3>#1 Admin Dashboard</h3>
-                    <p></p>
-                </div>
-            </div>
-        </aside>
-
-      
         <main class="main-content">
-        
-            <header class="dashboard-header">
-                <div class="header-left">
-                    <h1 class="header-logo">Dashboard</h1>
-                </div>
-                <div class="header-center">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search or type command..." class="search-input">
-                        <span class="search-shortcut">K</span>
+            <?php include 'header.php'; ?>
+
+            <div class="dashboard-content">
+                
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue by Category</h3>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card" style="flex: 1; min-width: 300px;">
+                        <h3 class="chart-title" style="margin-bottom: 1rem;">Most Popular Courses</h3>
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Enrollments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if ($popular_result->num_rows > 0) {
+                                    while($row = $popular_result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<td>" . $row['titre'] . "</td>";
+                                        echo "<td>" . $row['enrolled'] . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='2'>No data available</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="header-right">
-                    <button class="header-icon-btn dark-mode-toggle" title="Dark Mode">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button class="header-icon-btn notifications-btn" title="Notifications">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </button>
-                    <div class="user-profile">
-                        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F000%2F290%2F610%2Foriginal%2Fadministration-vector-icon.jpg&f=1&nofb=1&ipt=0c0a886cbda8307543dc1e414a300f5a4d50a9c8884b6fd80567d4bf75248a31" class="admin-avatar">
-                        <span class="user-name">Account</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-            </header> 
+
+            </div>
         </main>
     </div>
-     <script src="account.js"></script>
 
-<<<<<<< HEAD
-=======
     <script>
         const ctxOriginal = document.getElementById('categoryChart').getContext('2d');
         new Chart(ctxOriginal, {
@@ -185,8 +116,6 @@ while ($row = $revenue_cat_result->fetch_assoc()) {
             }
         });
     </script>
-    <script src="account.js"></script>
->>>>>>> 3e34b36 (newe version)
 </body>
 </html>
-
+<?php $conn->close(); ?>
