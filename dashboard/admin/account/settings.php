@@ -230,7 +230,7 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
                 <div class="button-group" style="margin-top: 1rem;">
                     <button type="button" class="btn btn-danger" onclick="exportData()">Export My Data</button>
                     <button type="button" class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
-                    <a href="../index.html">HOME</a>
+                    <a href="../index.php" style="color: #2563eb; text-decoration: none; font-weight: 600;">Back to Dashboard</a>
                 </div>
             </div>
         </div>

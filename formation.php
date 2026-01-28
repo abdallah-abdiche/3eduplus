@@ -3,16 +3,32 @@ session_start();
 require_once 'config.php';
 require_once 'auth.php';
 
-// Fetch all formations from database
+// Pagination Logic
+$limit = 6; // Number of items per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// Fetch total count for pagination
+$count_query = "SELECT COUNT(*) as total FROM Formations";
+$count_result = $conn->query($count_query);
+$total_items = $count_result->fetch_assoc()['total'];
+$total_pages = ceil($total_items / $limit);
+
+// Fetch limited formations from database
 $formations = [];
-$query = "SELECT formation_id, titre, categorie, prix, niveau, duree, date_creation, formationImageUrl FROM Formations ORDER BY date_creation DESC";
-$result = $conn->query($query);
+$query = "SELECT formation_id, titre, categorie, prix, niveau, duree, date_creation, formationImageUrl FROM Formations ORDER BY date_creation DESC LIMIT ? OFFSET ?";
+$stmt_list = $conn->prepare($query);
+$stmt_list->bind_param("ii", $limit, $offset);
+$stmt_list->execute();
+$result = $stmt_list->get_result();
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $formations[] = $row;
     }
 }
+$stmt_list->close();
 
 // Check if user is logged in
 $is_logged_in = isset($_SESSION['user_id']);
@@ -97,12 +113,12 @@ if (isset($_POST['add_to_cart']) && $is_logged_in) {
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des formations..." class="search-input" id="globalSearch">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des formations..." class="search-input" id="globalSearch">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>
@@ -295,19 +311,27 @@ if (isset($_POST['add_to_cart']) && $is_logged_in) {
                 </div>
 
                 <div class="pagination">
-                    <button class="pagination-btn prev-btn">
-                        <i class="fas fa-chevron-left"></i>
-                        Précédent
-                    </button>
+                    <?php if ($page > 1): ?>
+                        <a href="?page=<?php echo $page - 1; ?>" class="pagination-btn prev-btn">
+                            <i class="fas fa-chevron-left"></i>
+                            Précédent
+                        </a>
+                    <?php endif; ?>
+                    
                     <div class="pagination-numbers">
-                        <button class="pagination-number">1</button>
-                        <button class="pagination-number active">2</button>
-                        <button class="pagination-number">3</button>
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <a href="?page=<?php echo $i; ?>" class="pagination-number <?php echo $i == $page ? 'active' : ''; ?>">
+                                <?php echo $i; ?>
+                            </a>
+                        <?php endfor; ?>
                     </div>
-                    <button class="pagination-btn next-btn">
-                        Suivant
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+
+                    <?php if ($page < $total_pages): ?>
+                        <a href="?page=<?php echo $page + 1; ?>" class="pagination-btn next-btn">
+                            Suivant
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </section>
 
@@ -397,7 +421,24 @@ if (isset($_POST['add_to_cart']) && $is_logged_in) {
         </div>
     </footer>
 
+    <!-- Toast Notification Container -->
+    <div id="cartToast" class="toast-notification">
+        <div class="toast-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="toast-message">Formation ajoutée au panier !</div>
+    </div>
+
     <script>
+        // Notification Handler
+        function showNotification() {
+            const toast = document.getElementById('cartToast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
         // Add to cart functionality
         function addToCart(formationId) {
             <?php if (!$is_logged_in): ?>
@@ -418,7 +459,7 @@ if (isset($_POST['add_to_cart']) && $is_logged_in) {
             .then(data => {
                 if (data.success) {
                     document.querySelector('.cart-count').textContent = data.cart_count;
-                    alert('Formation ajoutée au panier!');
+                    showNotification();
                 }
             })
             .catch(error => console.error('Error:', error));

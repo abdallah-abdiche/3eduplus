@@ -15,8 +15,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     $password = isset($_POST['password']) ? $_POST['password'] : '';
     $wilaya = isset($_POST['wilaya']) ? trim($_POST['wilaya']) : '';
     $numero = isset($_POST['numero_tlf_utilisateur']) ? trim($_POST['numero_tlf_utilisateur']) : '';
-    $date = isset($_POST['date_registration']) ? $_POST['date_registration'] : '';
-    $image = isset($_POST['image_utilisateur']) ? $_POST['image_utilisateur'] : '';
+    $date = isset($_POST['date_registration']) ? $_POST['date_registration'] : date('Y-m-d');
+    $image = ''; 
+    
+    // Handle Image Upload
+    if (isset($_FILES['image_utilisateur']) && $_FILES['image_utilisateur']['error'] == 0) {
+        $target_dir = "uploads/profiles/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        $file_extension = pathinfo($_FILES["image_utilisateur"]["name"], PATHINFO_EXTENSION);
+        $file_name = uniqid() . "_profile." . $file_extension;
+        $target_file = $target_dir . $file_name;
+        
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array(strtolower($file_extension), $allowed_types)) {
+            if (move_uploaded_file($_FILES["image_utilisateur"]["tmp_name"], $target_file)) {
+                $image = $target_file;
+            }
+        }
+    }
     $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
     $role = isset($_POST['role']) ? trim($_POST['role']) : 'Apprenant';
 
@@ -286,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
             </form>
 
            
-            <form class="auth-form" id="signup-form" method="post" action="signup.php">
+            <form class="auth-form" id="signup-form" method="post" action="signup.php" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="signup-name">Nom complet</label>
                     <div class="input-wrapper">
@@ -336,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="image_utilisateur">Image utilisateur (optionnel)</label>
+                    <label for="image_utilisateur">Image de profil (optionnel)</label>
                     <div class="input-wrapper">
                         <i class="fas fa-image"></i>
                         <input type="file" id="image_utilisateur" name="image_utilisateur" accept="image/*">
@@ -363,9 +381,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signin'])) {
                         <select id="role" name="role" required>
                             <option value="">-- Sélectionnez votre rôle --</option>
                             <option value="Apprenant">Apprenant (Étudiant)</option>
+                            <option value="Assistante commerciale">Assistante commerciale</option>
                             <option value="Commercial">Commercial</option>
-                            <option value="Pédagogique">Pédagogique (Formateur)</option>
-                            <option value="Marketing">Marketing</option>
+                            <option value="Directeur pédagogique">Directeur pédagogique</option>
+                            <option value="Responsable marketing">Responsable marketing</option>
+                            <option value="Formateur">Formateur</option>
                         </select>
                     </div>
                 </div>

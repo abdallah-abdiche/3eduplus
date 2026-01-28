@@ -21,7 +21,7 @@ body {
 
 /* Navbar */
 .navbar {
-    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    background: linear-gradient(135deg, #ab47bc 0%, #7b1fa2 100%);
     color: white;
     padding: 15px 0;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -154,7 +154,7 @@ body {
 }
 
 .welcome-content .highlight {
-    color: #2ecc71;
+    color: #8e24aa;
     font-weight: bold;
 }
 
@@ -254,11 +254,11 @@ body {
 }
 
 .section-header h2 i {
-    color: #2ecc71;
+    color: #8e24aa;
 }
 
 .link-more {
-    color: #2ecc71;
+    color: #8e24aa;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -268,7 +268,7 @@ body {
 }
 
 .link-more:hover {
-    color: #27ae60;
+    color: #7b1fa2;
 }
 
 /* Transactions Table */
@@ -307,7 +307,7 @@ body {
 
 .amount {
     font-weight: 600;
-    color: #2ecc71;
+    color: #8e24aa;
 }
 
 .payment-status {
@@ -352,7 +352,7 @@ body {
     padding: 20px;
     background: #f9f9f9;
     border-radius: 10px;
-    border-left: 4px solid #2ecc71;
+    border-left: 4px solid #8e24aa;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -370,7 +370,7 @@ body {
 .rank-number {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #2ecc71;
+    color: #8e24aa;
     width: 50px;
     height: 50px;
     background: white;
@@ -410,7 +410,7 @@ body {
 .revenue-amount {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #2ecc71;
+    color: #8e24aa;
 }
 
 .revenue-label {
@@ -477,8 +477,8 @@ body {
 }
 
 .badge-commercial {
-    background: #e8f5e9;
-    color: #2ecc71;
+    background: #f3e5f5;
+    color: #8e24aa;
 }
 
 /* Buttons */
@@ -497,13 +497,13 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    background: linear-gradient(135deg, #ab47bc 0%, #7b1fa2 100%);
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+    box-shadow: 0 8px 20px rgba(142, 36, 170, 0.4);
 }
 
 /* Footer */

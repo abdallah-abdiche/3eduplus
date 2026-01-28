@@ -9,6 +9,7 @@
             elseif ($page == 'purchased-courses.php') echo 'Inscriptions & Sales';
             elseif ($page == 'reports.php') echo 'Reports & Analytics';
             elseif ($page == 'edit_users.php') echo 'Edit User';
+            elseif ($page == 'profile.php') echo 'My Profile';
             else echo 'Admin Panel';
             ?>
         </h1>

@@ -1,31 +1,19 @@
 <?php
 session_start();
+require_once '../../config.php';
+require_once '../../auth.php';
 
-// Admin check - vital for security
-if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    // If not admin via session flag, check role just in case (redundant but safe) or redirect
-    if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
-         header("Location: /3eduplus/signup.php"); 
-         exit();
-    }
-}
+// Standard check
+checkAuth();
+checkRole(['Admin']);
 
-$username = "root";
-$password = "";
-$database = "3eduplus";
-$servername = "localhost";
-$conn = new mysqli($servername, $username, $password, $database);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Handle Add Course
+// The $conn variable is already provided by config.php
 $message = "";
 
 // Check for messages from redirects
 if (isset($_GET['msg'])) {
     if ($_GET['msg'] == 'created') $message = "New course created successfully";
+    if ($_GET['msg'] == 'updated') $message = "Course updated successfully";
     if ($_GET['msg'] == 'deleted') $message = "Course deleted successfully";
 }
 
@@ -101,7 +89,7 @@ if (isset($_GET['msg'])) {
                                     echo "<td><img src='" . $imagePath . "' class='course-img-thumb'></td>";
                                     echo "<td>" . $row['titre'] . "</td>";
                                     echo "<td>" . $row['categorie'] . "</td>";
-                                    echo "<td>" . $row['prix'] . " €</td>";
+                                    echo "<td>" . $row['prix'] . " DA</td>";
                                     echo "<td>" . $row['niveau'] . "</td>";
                                     
                                     // Display video icon/link
@@ -118,7 +106,9 @@ if (isset($_GET['msg'])) {
                                     
                                     echo "<td>" . $row['date_creation'] . "</td>";
                                     echo "<td>
-                                            <a href='delete_course.php?id=" . $row['formation_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+                                            <a href='manage_playlist.php?id=" . $row['formation_id'] . "' class='btn btn-sm' style='background: #f1f5f9; color: #4f46e5; border: 1px solid #e2e8f0;' title='Manage Videos'><i class='fas fa-play-circle'></i> Playlist</a>
+                                            <a href='edit_course.php?id=" . $row['formation_id'] . "' class='btn btn-primary btn-sm'><i class='fas fa-edit'></i> Edit</a>
+                                            <a href='delete_course.php?id=" . $row['formation_id'] . "' class='btn btn-danger btn-sm'><i class='fas fa-trash'></i> Delete</a>
                                           </td>";
                                     echo "</tr>";
                                 }

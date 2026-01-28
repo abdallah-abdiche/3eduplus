@@ -158,12 +158,12 @@ $category_colors = [
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des formations..." class="search-input">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des formations..." class="search-input">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>
@@ -214,7 +214,7 @@ $category_colors = [
         <p>
             Accédez à plus de <?php echo $stats['formations']; ?> formations professionnelles dans les domaines du digital, du design et de la
             technologie.
-            <br>Formez-vous à votre rythme avec nos experts.
+            <br>Formez-vous à votre rythme with nos experts.
         </p>
 
         <div>
@@ -330,7 +330,7 @@ $category_colors = [
                         </div>
                         <div class="course-card-header">
                             <div class="course-rating"><span class="stars">★★★★★</span><span>4.8</span></div>
-                            <h3 class="course-title"><?php echo htmlspecialchars(substr($formation['titre'], 0, 50)); ?></h3>
+                            <h3 class="course-title"><?php echo htmlspecialchars($formation['titre']); ?></h3>
                             <p class="course-instructor"><?php echo htmlspecialchars($formation['categorie'] ?? 'Formation'); ?></p>
                             <div class="course-stats">
                                 <span><?php echo $formation['enrollments']; ?> étudiants</span>
@@ -475,7 +475,7 @@ $category_colors = [
             .then(data => {
                 if (data.success) {
                     document.querySelector('.cart-count').textContent = data.cart_count;
-                    alert('Formation ajoutée au panier!');
+                    // Alert removed
                 }
             })
             .catch(error => console.error('Error:', error));

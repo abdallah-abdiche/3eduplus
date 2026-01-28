@@ -6,16 +6,6 @@ require_once '../../auth.php';
 checkAuth();
 checkRole(['Admin']);
 
-$username = "root";
-$password = "";
-$database = "3eduplus";
-$servername = "localhost";
-$conn = new mysqli($servername, $username, $password, $database);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Handle messages
 $msg = "";
 if (isset($_GET['msg'])) {
@@ -80,7 +70,7 @@ if (isset($_GET['msg'])) {
                                     echo "<td>" . ($row['nom_role'] ? $row['nom_role'] : 'User') . "</td>";
                                     echo "<td>
                                             <a href='edit_users.php?user_id=" . $row['user_id'] . "' class='btn btn-primary btn-sm'>Edit</a>
-                                            <a href='delete_user.php?id=" . $row['user_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+                                            <a href='delete_user.php?id=" . $row['user_id'] . "' class='btn btn-danger btn-sm'>Delete</a>
                                           </td>";
                                     echo "</tr>";
                                 }

@@ -9,6 +9,9 @@ $user = getCurrentUser();
 $formations = [];
 $user_id = $user['id'];
 
+$formations = [];
+$user_id = $user['id'];
+
 // Fetch purchased formations
 $query = "
     SELECT f.*, i.date_inscription 
@@ -21,13 +24,32 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $formations[] = $row;
     }
 }
 $stmt->close();
+
+// Fetch registered events
+$events = [];
+$event_query = "
+    SELECT e.*, ei.date_inscription 
+    FROM evenements e 
+    JOIN event_inscriptions ei ON e.evenement_id = ei.evenement_id 
+    WHERE ei.user_id = ? 
+    ORDER BY ei.date_inscription DESC
+";
+$e_stmt = $conn->prepare($event_query);
+$e_stmt->bind_param("i", $user_id);
+$e_stmt->execute();
+$e_result = $e_stmt->get_result();
+if ($e_result && $e_result->num_rows > 0) {
+    while ($row = $e_result->fetch_assoc()) {
+        $events[] = $row;
+    }
+}
+$e_stmt->close();
 
 // Get cart count
 $cart_count = 0;
@@ -106,12 +128,12 @@ $count_stmt->close();
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des formations..." class="search-input">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des formations..." class="search-input">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>
@@ -140,13 +162,16 @@ $count_stmt->close();
     </header>
 
     <div class="my-courses-header">
-        <h1>Mes Formations</h1>
-        <p>Retrouvez toutes les formations auxquelles vous êtes inscrit</p>
+        <h1>Mes Inscriptions</h1>
+        <p>Retrouvez toutes vos formations et événements</p>
     </div>
 
     <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <h2 style="margin-bottom: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+            <i class="fas fa-graduation-cap"></i> Mes Formations
+        </h2>
         <?php if (count($formations) > 0): ?>
-            <div class="course-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+            <div class="course-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 50px;">
                 <?php foreach ($formations as $formation): ?>
                     <div class="course-card">
                         <div class="course-image">
@@ -162,7 +187,7 @@ $count_stmt->close();
                         <div class="course-content">
                             <div class="course-category"><?php echo htmlspecialchars($formation['categorie'] ?? 'Général'); ?></div>
                             <h3 class="course-title"><?php echo htmlspecialchars($formation['titre']); ?></h3>
-                            <div class="course-details">
+                            <div class="course-details" style="margin-bottom: 15px;">
                                 <div class="detail-item">
                                     <i class="fas fa-clock"></i>
                                     <span><?php echo htmlspecialchars($formation['duree'] ?? 'Non spécifié'); ?></span>
@@ -183,11 +208,56 @@ $count_stmt->close();
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
-            <div style="text-align: center; padding: 50px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <i class="fas fa-graduation-cap" style="font-size: 60px; color: #ccc; margin-bottom: 20px;"></i>
-                <h2>Vous n'êtes inscrit à aucune formation</h2>
-                <p style="margin-bottom: 30px; color: #666;">Parcourez notre catalogue pour découvrir de nouvelles compétences.</p>
-                <a href="formation.php" class="signup-btn" style="display: inline-block; background: #007bff; color: white; border: none;">Découvrir les formations</a>
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 50px;">
+                <p style="color: #666;">Vous n'êtes inscrit à aucune formation.</p>
+                <a href="formation.php" style="color: #007bff; text-decoration: none; font-weight: 500;">Découvrir les formations</a>
+            </div>
+        <?php endif; ?>
+
+        <h2 style="margin-bottom: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-top: 40px;">
+            <i class="fas fa-calendar-alt"></i> Mes Événements
+        </h2>
+        <?php if (count($events) > 0): ?>
+            <div class="course-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <?php foreach ($events as $event): ?>
+                    <div class="course-card">
+                        <div class="course-image">
+                            <?php if (!empty($event['image_url'])): ?>
+                                <img src="<?php echo htmlspecialchars($event['image_url']); ?>" alt="<?php echo htmlspecialchars($event['titre']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                            <?php else: ?>
+                                <div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-calendar-alt" style="font-size: 50px; color: #ccc;"></i>
+                                </div>
+                            <?php endif; ?>
+                            <div class="course-overlay"><span class="course-badge" style="background: #28a745;">Inscrit</span></div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category"><?php echo htmlspecialchars($event['type'] ?? 'Événement'); ?></div>
+                            <h3 class="course-title"><?php echo htmlspecialchars($event['titre']); ?></h3>
+                            <div class="course-details" style="margin-bottom: 15px;">
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span><?php echo date('d/m/Y', strtotime($event['date_evenement'])); ?></span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span><?php echo htmlspecialchars($event['lieu']); ?></span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9em; color: #666;">
+                                Inscrit le: <?php echo date('d/m/Y', strtotime($event['date_inscription'])); ?>
+                            </div>
+                            <a href="event_content.php?id=<?php echo $event['evenement_id']; ?>" class="access-btn" style="background-color: #28a745;">
+                                <i class="fas fa-video"></i> Accéder au contenu
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div style="text-align: center; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <p style="color: #666;">Vous n'êtes inscrit à aucun événement.</p>
+                <a href="evenements.php" style="color: #28a745; text-decoration: none; font-weight: 500;">Parcourir les événements</a>
             </div>
         <?php endif; ?>
     </div>

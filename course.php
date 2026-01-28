@@ -45,6 +45,42 @@ if ($count_result->num_rows > 0) {
     $cart_count = $count_result->fetch_assoc()['count'];
 }
 $count_stmt->close();
+
+// Fetch quiz
+$quiz_query = "SELECT * FROM quizzes WHERE formation_id = ?";
+$q_stmt = $conn->prepare($quiz_query);
+$q_stmt->bind_param("i", $formation_id);
+$q_stmt->execute();
+$quiz = $q_stmt->get_result()->fetch_assoc();
+$q_stmt->close();
+
+// Fetch course videos
+$videos_query = "SELECT * FROM course_videos WHERE formation_id = ? ORDER BY orders ASC";
+$v_stmt = $conn->prepare($videos_query);
+$v_stmt->bind_param("i", $formation_id);
+$v_stmt->execute();
+$videos = $v_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$v_stmt->close();
+
+// Fetch progress
+$watched_query = "SELECT video_id FROM user_video_progress WHERE user_id = ? AND video_type = 'course'";
+$w_stmt = $conn->prepare($watched_query);
+$w_stmt->bind_param("i", $user_id);
+$w_stmt->execute();
+$watched_result = $w_stmt->get_result();
+$watched_ids = [];
+while ($row = $watched_result->fetch_assoc()) {
+    $watched_ids[] = $row['video_id'];
+}
+$w_stmt->close();
+
+// Calculate progress percentage
+$total_videos = count($videos);
+$watched_count = 0;
+foreach($videos as $v) {
+    if (in_array($v['id'], $watched_ids)) $watched_count++;
+}
+$progress_percent = $total_videos > 0 ? round(($watched_count / $total_videos) * 100) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +89,6 @@ $count_stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($course['titre']); ?> - 3edu+</title>
-    <link rel="stylesheet" href="formation.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./LogoEdu.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -289,12 +324,12 @@ $count_stmt->close();
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des formations..." class="search-input">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des formations..." class="search-input">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>
@@ -353,23 +388,48 @@ $count_stmt->close();
         </div>
 
         <div class="video-container">
-            <?php if (!empty($course['video_url'])): ?>
-                <div class="video-wrapper">
+            <?php if (!empty($videos)): ?>
+                <div class="video-wrapper" id="video-wrapper">
                     <?php 
-                    $video_url = $course['video_url'];
-                    // Check if it's a YouTube URL
+                    $active_video = $videos[0];
+                    $video_url = $active_video['video_url'];
+                    // Track first video automatically
+                    ?>
+                    <script>
+                        function trackVideo(id) {
+                            fetch('track_progress.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `video_id=${id}&type=course`
+                            }).then(res => res.json()).then(data => {
+                                if(data.success) {
+                                    // Refresh progress bar in UI
+                                }
+                            });
+                        }
+                        
+                        function loadVideo(url, id, title) {
+                            const wrapper = document.getElementById('video-wrapper');
+                            let html = '';
+                            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                                let ytId = url.split('v=')[1] || url.split('/').pop();
+                                html = `<iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen></iframe>`;
+                            } else {
+                                html = `<video controls autoplay onplay="trackVideo(${id})"><source src="${url}" type="video/mp4"></video>`;
+                            }
+                            wrapper.innerHTML = html;
+                            // If iframe, track immediately on click
+                            if(url.includes('youtube.com')) trackVideo(id);
+                            
+                            document.getElementById('current-video-title').innerText = title;
+                        }
+                    </script>
+                    <?php
                     if (preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/', $video_url, $matches)) {
                         $youtube_id = $matches[1];
                         echo '<iframe src="https://www.youtube.com/embed/' . htmlspecialchars($youtube_id) . '" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>';
-                    } 
-                    // Check if it's a Vimeo URL
-                    elseif (preg_match('/vimeo\.com\/(\d+)/', $video_url, $matches)) {
-                        $vimeo_id = $matches[1];
-                        echo '<iframe src="https://player.vimeo.com/video/' . htmlspecialchars($vimeo_id) . '" frameborder="0" allowfullscreen></iframe>';
-                    }
-                    // Otherwise treat as direct video file
-                    else {
-                        echo '<video controls><source src="' . htmlspecialchars($video_url) . '" type="video/mp4">Votre navigateur ne supporte pas la lecture vidéo.</video>';
+                    } else {
+                        echo '<video controls onplay="trackVideo('.$active_video['id'].')"><source src="' . htmlspecialchars($video_url) . '" type="video/mp4"></video>';
                     }
                     ?>
                 </div>
@@ -385,6 +445,7 @@ $count_stmt->close();
         <div class="course-content-section">
             <div class="course-description">
                 <h2><i class="fas fa-info-circle"></i> Description du cours</h2>
+                <h3 id="current-video-title" style="color: #007bff; margin: 10px 0;"><?php echo !empty($videos) ? htmlspecialchars($videos[0]['title']) : ''; ?></h3>
                 <p><?php echo nl2br(htmlspecialchars($course['description'] ?? 'Aucune description disponible pour cette formation.')); ?></p>
             </div>
 
@@ -392,39 +453,47 @@ $count_stmt->close();
                 <div class="sidebar-section">
                     <h3><i class="fas fa-chart-line"></i> Votre progression</h3>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%;"></div>
+                        <div class="progress-fill" style="width: <?php echo $progress_percent; ?>%;"></div>
                     </div>
-                    <p class="progress-text">0% complété</p>
+                    <p class="progress-text"><?php echo $progress_percent; ?>% complété</p>
                 </div>
 
+                <?php if (!empty($videos)): ?>
                 <div class="sidebar-section">
-                    <h3><i class="fas fa-book-open"></i> Informations</h3>
-                    <ul class="info-list">
-                        <li>
-                            <i class="fas fa-signal"></i>
-                            Niveau: <?php echo htmlspecialchars($course['niveau'] ?? 'Tous niveaux'); ?>
-                        </li>
-                        <li>
-                            <i class="fas fa-clock"></i>
-                            Durée: <?php echo htmlspecialchars($course['duree'] ?? 'Non spécifié'); ?> heures
-                        </li>
-                        <li>
-                            <i class="fas fa-tag"></i>
-                            Catégorie: <?php echo htmlspecialchars($course['categorie'] ?? 'Général'); ?>
-                        </li>
-                        <li>
-                            <i class="fas fa-calendar-check"></i>
-                            Inscrit le: <?php echo date('d/m/Y', strtotime($course['date_inscription'])); ?>
-                        </li>
-                    </ul>
+                    <h3><i class="fas fa-play-circle"></i> Playlist</h3>
+                    <div class="playlist-container" style="max-height: 250px; overflow-y: auto;">
+                        <?php foreach($videos as $v): ?>
+                            <div onclick="loadVideo('<?php echo $v['video_url']; ?>', <?php echo $v['id']; ?>, '<?php echo addslashes($v['title']); ?>')" 
+                                 style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; <?php echo in_array($v['id'], $watched_ids) ? 'color: #28a745;' : ''; ?>">
+                                <i class="<?php echo in_array($v['id'], $watched_ids) ? 'fas fa-check-circle' : 'far fa-play-circle'; ?>"></i>
+                                <span><?php echo htmlspecialchars($v['title']); ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
+                <?php endif; ?>
 
                 <div class="sidebar-section">
                     <h3><i class="fas fa-certificate"></i> Certificat</h3>
-                    <a href="generate_certificate.php?id=<?php echo $formation_id; ?>" class="certificate-btn">
-                        <i class="fas fa-award"></i> Obtenir mon certificat
+                    <?php if ($progress_percent >= 100): ?>
+                        <a href="generate_certificate.php?id=<?php echo $formation_id; ?>" class="certificate-btn">
+                            <i class="fas fa-award"></i> Obtenir mon certificat
+                        </a>
+                    <?php else: ?>
+                        <div class="certificate-btn" style="background: #e2e8f0; color: #94a3b8; cursor: not-allowed; box-shadow: none;">
+                            <i class="fas fa-lock"></i> Complétez les vidéos
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <?php if ($quiz): ?>
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-question-circle"></i> Évaluation</h3>
+                    <a href="quiz.php?id=<?php echo $quiz['id']; ?>" class="certificate-btn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+                        <i class="fas fa-play-circle"></i> Commencer le Quiz
                     </a>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

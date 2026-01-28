@@ -14,24 +14,24 @@ $user_name = $_SESSION['user_name'];
 $user_email = $_SESSION['user_email'];
 
 // Get sales statistics
-$sales_query = "SELECT COUNT(*) as total_sales, SUM(p.montant_total) as total_revenue
+$sales_query = "SELECT COUNT(*) as total_sales, SUM(p.montant) as total_revenue
                 FROM paiements p
                 WHERE p.date_paiement >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
 $result = $conn->query($sales_query);
 $sales_stats = $result->fetch_assoc();
 
 // Get recent transactions
-$transactions_query = "SELECT p.id, p.montant_total, p.methode_paiement, p.statut_paiement, p.date_paiement, 
+$transactions_query = "SELECT p.paiement_id as id, p.montant, p.montant as montant_total, p.methode_paiement, p.statut as statut_paiement, p.date_paiement, 
                               u.Nom_Complet, u.Email
                        FROM paiements p
-                       JOIN utilisateurs u ON p.utilisateur_id = u.user_id
+                       JOIN utilisateurs u ON p.user_id = u.user_id
                        ORDER BY p.date_paiement DESC
                        LIMIT 10";
 $transactions_result = $conn->query($transactions_query);
 $transactions = $transactions_result->fetch_all(MYSQLI_ASSOC);
 
 // Get top selling courses
-$top_courses_query = "SELECT f.titre, COUNT(i.id) as total_enrolled, SUM(f.prix) as total_revenue
+$top_courses_query = "SELECT f.titre, COUNT(i.inscription_id) as total_enrolled, SUM(f.prix) as total_revenue
                       FROM inscriptions i
                       JOIN formations f ON i.formation_id = f.formation_id
                       GROUP BY f.formation_id
@@ -42,9 +42,9 @@ $top_courses = $top_courses_result->fetch_all(MYSQLI_ASSOC);
 
 // Get customer statistics
 $customer_stats_query = "SELECT 
-                        COUNT(DISTINCT p.utilisateur_id) as total_customers,
-                        COUNT(DISTINCT CASE WHEN p.statut_paiement = 'Complété' THEN p.utilisateur_id END) as paying_customers,
-                        AVG(p.montant_total) as avg_transaction
+                        COUNT(DISTINCT p.user_id) as total_customers,
+                        COUNT(DISTINCT CASE WHEN p.statut = 'paid' THEN p.user_id END) as paying_customers,
+                        AVG(p.montant) as avg_transaction
                         FROM paiements p";
 $customer_result = $conn->query($customer_stats_query);
 $customer_stats = $customer_result->fetch_assoc();
@@ -62,7 +62,7 @@ $avg_transaction = $customer_stats['avg_transaction'] ?? 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Commercial - 3edu+</title>
     <link rel="stylesheet" href="../../style.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="dashboard.css?v=<?php echo time(); ?>">
     <link rel="icon" href="../../LogoEdu.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -84,6 +84,11 @@ $avg_transaction = $customer_stats['avg_transaction'] ?? 0;
                 <a href="../../index.php" class="nav-link">
                     <i class="fas fa-globe"></i> Site
                 </a>
+                <?php if (($_SESSION['user_role'] ?? '') === 'Admin' || ($_SESSION['is_admin'] ?? false)): ?>
+                    <a href="../admin/index.php" class="nav-link" style="background: #8e24aa; color: white; border-radius: 6px; padding: 8px 15px;">
+                        <i class="fas fa-shield-alt"></i> Admin
+                    </a>
+                <?php endif; ?>
                 <div class="nav-user">
                     <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($user_name); ?>&background=random" alt="Avatar" class="user-avatar">
                     <span class="user-name"><?php echo htmlspecialchars($user_name); ?></span>
@@ -122,8 +127,8 @@ $avg_transaction = $customer_stats['avg_transaction'] ?? 0;
         <!-- KPI Cards -->
         <section class="stats-section">
             <div class="stat-card">
-                <div class="stat-icon" style="background: #e8f5e9;">
-                    <i class="fas fa-dollar-sign" style="color: #388e3c;"></i>
+                <div class="stat-icon" style="background: #f3e5f5;">
+                    <i class="fas fa-dollar-sign" style="color: #8e24aa;"></i>
                 </div>
                 <div class="stat-content">
                     <div class="stat-value"><?php echo number_format($total_revenue, 2); ?> DA</div>

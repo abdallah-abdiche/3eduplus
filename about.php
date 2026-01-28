@@ -51,6 +51,22 @@ if (isset($_POST['checkout'])) {
         exit();
     }
 }
+
+// Fetch team members
+$team_result = $conn->query("SELECT * FROM equipe ORDER BY ordre ASC");
+$team_members = $team_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch FAQs
+$faqs_result = $conn->query("SELECT * FROM faqs ORDER BY ordre ASC");
+$faqs_list = $faqs_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch Blog posts
+$blog_result = $conn->query("SELECT * FROM blog_posts ORDER BY date_publication DESC LIMIT 3");
+$blog_posts_list = $blog_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch Upcoming Events
+$events_result = $conn->query("SELECT * FROM evenements ORDER BY date_evenement ASC LIMIT 2");
+$upcoming_events = $events_result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 
@@ -61,10 +77,8 @@ if (isset($_POST['checkout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À propos de 3edu+ - Centre de Formation Professionnelle</title>
-    <link rel="stylesheet" href="about.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="./LogoEdu.png" type="image/png">
-    <link rel="stylesheet" href="user-btn.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -72,26 +86,26 @@ if (isset($_POST['checkout'])) {
   
     <header class="header-nav">
         <div class="logocontainer">
-            <a href="#"><img src="./LogoEdu.png" width="150" height="100" alt="3edu+ Logo"></a>
+            <a href="index.php"><img src="./LogoEdu.png" width="150" height="100" alt="3edu+ Logo"></a>
         </div>
 
         <nav class="main-nav">
             <ul class="nav-links">
-                <li><a href="index.php " >Accueil</a></li>
+                <li><a href="index.php">Accueil</a></li>
                 <li><a href="formation.php">Formations</a></li>
                 <li><a href="evenements.php">Événements</a></li>
                 <li><a href="about.php" class="active">À propos</a></li>
-                <li><a href="inscription.php">Inscription</a></li>
+                <li><a href="inscription.php">Inscriptions</a></li>
             </ul>
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des formations..." class="search-input">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des formations..." class="search-input">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>
@@ -104,7 +118,7 @@ if (isset($_POST['checkout'])) {
             </button>
             <a href="cart.php" class="cart-icon" title="Panier">
                 <img src="https://cdn-icons-png.flaticon.com/128/2838/2838895.png" width="30" height="30" alt="Panier">
-                <span class="cart-count">0</span>
+                <span class="cart-count"><?php echo count($cart_items); ?></span>
             </a>
             <?php if ($is_logged_in): ?>
                 <div class="user-menu">
@@ -205,37 +219,16 @@ if (isset($_POST['checkout'])) {
             <p class="team-subtitle">Des experts passionnés à votre service</p>
 
             <div class="team-grid">
-                <div class="team-member">
-                    <div class="member-photo">
-                        <img src="https://i.pinimg.com/736x/ae/bd/4b/aebd4b907d4092ec8b6ecf3b6341aa7e.jpg"
-                            alt="walid">
+                <?php foreach ($team_members as $member): ?>
+                    <div class="team-member">
+                        <div class="member-photo">
+                            <img src="<?php echo htmlspecialchars($member['image_url']); ?>" alt="<?php echo htmlspecialchars($member['nom']); ?>">
+                        </div>
+                        <h3><?php echo htmlspecialchars($member['nom']); ?></h3>
+                        <p class="member-role"><?php echo htmlspecialchars($member['role']); ?></p>
+                        <p class="member-bio"><?php echo htmlspecialchars($member['bio']); ?></p>
                     </div>
-                    <h3>Abdiche abdallah</h3>
-                    <p class="member-role">Directeur Pédagogique</p>
-                    <p class="member-bio">15 ans d'expérience dans la formation professionnelle et l'innovation
-                        pédagogique</p>
-                </div>
-
-                <div class="team-member">
-                    <div class="member-photo">
-                        <img src="https://i.pinimg.com/1200x/ab/9c/6c/ab9c6cbd3d2b38189643d08ee6e1834b.jpg"
-                            alt="Tom holland">
-                    </div>
-                    <h3>Abdiche abdallah</h3>
-                    <p class="member-role">Responsable Formation</p>
-                    <p class="member-bio">Spécialiste en développement des compétences et accompagnement personnalisé
-                    </p>
-                </div>
-
-                <div class="team-member">
-                    <div class="member-photo">
-                        <img src="https://i.pinimg.com/736x/a4/5a/1d/a45a1d0cd90a852b9c53493364c6f8cd.jpg"
-                            alt="abdou">
-                    </div>
-                    <h3>Abdiche abdallah</h3>
-                    <p class="member-role">Expert Technique</p>
-                    <p class="member-bio">Formateur certifié avec une expertise reconnue en technologies digitales</p>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -261,72 +254,17 @@ if (isset($_POST['checkout'])) {
                 <p class="section-subtitle">Trouvez les réponses à vos questions les plus courantes</p>
 
                 <div class="faq-grid">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Comment s'inscrire à une formation ?</h3>
-                            <i class="fas fa-chevron-down"></i>
+                    <?php foreach ($faqs_list as $faq): ?>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <h3><?php echo htmlspecialchars($faq['question']); ?></h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p><?php echo htmlspecialchars($faq['reponse']); ?></p>
+                            </div>
                         </div>
-                        <div class="faq-answer">
-                            <p>L'inscription est simple : parcourez notre catalogue de formations, sélectionnez celle
-                                qui vous intéresse, et suivez le processus d'inscription en ligne. Vous recevrez une
-                                confirmation par email.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Les formations sont-elles certifiantes ?</h3>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Oui, toutes nos formations délivrent une certification reconnue par l'industrie. Nos
-                                certifications sont valorisées par les employeurs et peuvent booster votre carrière.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Puis-je suivre une formation à mon rythme ?</h3>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Absolument ! Nos formations en ligne vous permettent d'apprendre à votre rythme, 24h/24.
-                                Vous avez accès au contenu pendant toute la durée de la formation.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Y a-t-il un support technique disponible ?</h3>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Oui, notre équipe de support est disponible du lundi au vendredi de 9h à 18h. Vous pouvez
-                                nous contacter par email, chat en ligne ou téléphone.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Proposez-vous des formations en entreprise ?</h3>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Oui, nous proposons des formations sur mesure pour les entreprises. Contactez-nous pour
-                                discuter de vos besoins spécifiques et obtenir un devis personnalisé.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Quels sont les modes de paiement acceptés ?</h3>
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            <p>Nous acceptons les cartes bancaires, virements, chèques et paiements en plusieurs fois.
-                                Les formations peuvent également être financées via votre CPF.</p>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
@@ -336,64 +274,67 @@ if (isset($_POST['checkout'])) {
                 <p class="section-subtitle">Découvrez nos derniers articles et conseils</p>
 
                 <div class="blog-grid">
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop"
-                                alt="Formation Digital">
-                            <div class="blog-category">Formation</div>
-                        </div>
-                        <div class="blog-content-card">
-                            <div class="blog-meta">
-                                <span class="blog-date">15 Janvier 2025</span>
-                                <span class="blog-author">Par Marie Claire</span>
+                    <?php foreach ($blog_posts_list as $post): ?>
+                        <article class="blog-card">
+                            <div class="blog-image">
+                                <img src="<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['titre']); ?>">
+                                <div class="blog-category"><?php echo htmlspecialchars($post['categorie']); ?></div>
                             </div>
-                            <h3>Les 5 compétences digitales essentielles en 2025</h3>
-                            <p>Découvrez les compétences digitales qui seront les plus demandées cette année et comment
-                                les développer efficacement.</p>
-                            <a href="#" class="blog-link">Lire la suite <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=250&fit=crop"
-                                alt="Carrière">
-                            <div class="blog-category">Carrière</div>
-                        </div>
-                        <div class="blog-content-card">
-                            <div class="blog-meta">
-                                <span class="blog-date">12 Janvier 2025</span>
-                                <span class="blog-author">Par Jean Dupont</span>
+                            <div class="blog-content-card">
+                                <div class="blog-meta">
+                                    <span class="blog-date"><?php echo date('d M Y', strtotime($post['date_publication'])); ?></span>
+                                    <span class="blog-author">Par <?php echo htmlspecialchars($post['auteur']); ?></span>
+                                </div>
+                                <h3><?php echo htmlspecialchars($post['titre']); ?></h3>
+                                <p><?php echo htmlspecialchars(substr($post['contenu'], 0, 100)); ?>...</p>
+                                <a href="#" class="blog-link">Lire la suite <i class="fas fa-arrow-right"></i></a>
                             </div>
-                            <h3>Comment réussir sa reconversion professionnelle</h3>
-                            <p>Nos conseils pratiques pour réussir votre changement de carrière et développer de
-                                nouvelles compétences.</p>
-                            <a href="#" class="blog-link">Lire la suite <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-
-                    <article class="blog-card">
-                        <div class="blog-image">
-                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop"
-                                alt="Technologie">
-                            <div class="blog-category">Technologie</div>
-                        </div>
-                        <div class="blog-content-card">
-                            <div class="blog-meta">
-                                <span class="blog-date">10 Janvier 2025</span>
-                                <span class="blog-author">Par Pierre Martin</span>
-                            </div>
-                            <h3>L'IA dans la formation : révolution ou évolution ?</h3>
-                            <p>Exploration de l'impact de l'intelligence artificielle sur les méthodes d'apprentissage
-                                modernes.</p>
-                            <a href="#" class="blog-link">Lire la suite <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
+                        </article>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Upcoming Events Section (from database) -->
+    <?php if (!empty($upcoming_events)): ?>
+    <section class="blog-section" style="padding: 60px 20px; background: #f8fafc;">
+        <h2 style="text-align: center; margin-bottom: 40px;">Prochains Événements & Actualités</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+            <?php foreach ($upcoming_events as $event): ?>
+            <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <?php if ($event['image_url']): ?>
+                    <img src="<?php echo htmlspecialchars($event['image_url']); ?>" style="width: 100%; height: 200px; object-fit: cover;">
+                <?php else: ?>
+                    <div style="width: 100%; height: 200px; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                <?php endif; ?>
+                <div style="padding: 20px;">
+                    <span style="color: #3b82f6; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;"><?php echo htmlspecialchars($event['categorie']); ?></span>
+                    <h3 style="margin: 10px 0;"><?php echo htmlspecialchars($event['titre']); ?></h3>
+                    <p style="color: #64748b; font-size: 0.9rem;"><?php echo htmlspecialchars(substr($event['description'], 0, 100)); ?>...</p>
+                    <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; color: #1e3a8a;"><i class="fas fa-calendar-day"></i> <?php echo date('d/m/Y', strtotime($event['date_evenement'])); ?></span>
+                        <a href="evenements.php" style="color: #1e3a8a; font-weight: 600; text-decoration: none;">Voir détails →</a>
+                    </div>
+                </div>
+            </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Prêt à transformer votre avenir ?</h2>
+            <p>Rejoignez 3edu+ dès aujourd'hui et profitez de nos formations d'excellence.</p>
+            <div class="cta-buttons">
+                <a href="signup.php" class="cta-btn">Créer un compte</a>
+                <a href="contact.php" class="cta-btn secondary">Nous contacter</a>
+            </div>
+        </div>
+    </section>
 
     <section class="contact-section">
         <div class="container">
@@ -478,6 +419,48 @@ if (isset($_POST['checkout'])) {
             </div>
         </div>
     </footer>
+
+    <script>
+        // FAQ Toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const faqItem = this.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.faq-content, .blog-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding content
+                if (index === 0) {
+                    document.querySelector('.faq-content').classList.add('active');
+                } else {
+                    document.querySelector('.blog-content').classList.add('active');
+                }
+            });
+        });
+
+        // User menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const userBtn = document.querySelector('.user-btn');
+            const userMenu = document.querySelector('.user-menu');
+            if (userBtn && userMenu) {
+                userBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userMenu.classList.toggle('open');
+                });
+                document.addEventListener('click', () => userMenu.classList.remove('open'));
+            }
+        });
+    </script>
 
 </body>
 </html>

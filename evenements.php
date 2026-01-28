@@ -7,8 +7,7 @@ $events = [];
 $query = "SELECT e.*, 
           (SELECT COUNT(*) FROM event_inscriptions WHERE evenement_id = e.evenement_id) as participants_inscrits
           FROM evenements e 
-          WHERE e.date_evenement >= CURDATE()
-          ORDER BY e.date_evenement ASC";
+          ORDER BY e.date_evenement DESC";
 $result = $conn->query($query);
 
 if ($result && $result->num_rows > 0) {
@@ -41,20 +40,46 @@ if ($is_logged_in) {
 if (isset($_POST['register_event']) && $is_logged_in) {
     $event_id = (int)$_POST['event_id'];
     
-    $check = $conn->prepare("SELECT id FROM event_inscriptions WHERE evenement_id = ? AND user_id = ?");
-    $check->bind_param("ii", $event_id, $user_id);
-    $check->execute();
+    // Get event details
+    $event_query = $conn->prepare("SELECT * FROM evenements WHERE evenement_id = ?");
+    $event_query->bind_param("i", $event_id);
+    $event_query->execute();
+    $event_data = $event_query->get_result()->fetch_assoc();
+    $event_query->close();
     
-    if ($check->get_result()->num_rows == 0) {
-        $register = $conn->prepare("INSERT INTO event_inscriptions (evenement_id, user_id) VALUES (?, ?)");
-        $register->bind_param("ii", $event_id, $user_id);
-        $register->execute();
-        $register->close();
+    if ($event_data) {
+        if ($event_data['prix'] > 0) {
+            // Paid event - redirect to payment
+            $_SESSION['checkout_type'] = 'event';
+            $_SESSION['checkout_event_id'] = $event_id;
+            $_SESSION['checkout_total'] = (float)$event_data['prix'];
+            $_SESSION['checkout_items'] = [
+                [
+                    'id' => $event_id,
+                    'titre' => $event_data['titre'],
+                    'prix_unitaire' => (float)$event_data['prix']
+                ]
+            ];
+            header("Location: payment.php");
+            exit();
+        } else {
+            // Free event - register immediately
+            $check = $conn->prepare("SELECT id FROM event_inscriptions WHERE evenement_id = ? AND user_id = ?");
+            $check->bind_param("ii", $event_id, $user_id);
+            $check->execute();
+            
+            if ($check->get_result()->num_rows == 0) {
+                $register = $conn->prepare("INSERT INTO event_inscriptions (evenement_id, user_id) VALUES (?, ?)");
+                $register->bind_param("ii", $event_id, $user_id);
+                $register->execute();
+                $register->close();
+            }
+            $check->close();
+            
+            header("Location: evenements.php?registered=1");
+            exit();
+        }
     }
-    $check->close();
-    
-    header("Location: evenements.php?registered=1");
-    exit();
 }
 
 $user_registrations = [];
@@ -100,12 +125,12 @@ if ($is_logged_in) {
         </nav>
 
         <div class="nav-actions">
-            <div class="search-container">
-                <input type="text" placeholder="Rechercher des événements..." class="search-input">
-                <button class="search-btn" title="Rechercher">
+            <form action="search_results.php" method="GET" class="search-container">
+                <input type="text" name="q" placeholder="Rechercher des événements..." class="search-input">
+                <button type="submit" class="search-btn" title="Rechercher">
                     <i class="fas fa-search"></i>
                 </button>
-            </div>
+            </form>
             <div>
                 <select name="lang" id="selectlang" class="select-Lang">
                     <option value="francais">FR</option>

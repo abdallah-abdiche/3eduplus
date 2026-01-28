@@ -33,8 +33,32 @@
                 </li>
                 <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'purchased-courses.php' ? 'active' : ''; ?>">
                     <a href="purchased-courses.php" class="nav-link">
-                        <i class="fas fa-shopping-bag nav-icon"></i>
+                        <i class="fas fa-briefcase nav-icon"></i>
                         <span>Inscriptions</span>
+                    </a>
+                </li>
+                <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'manage_events.php' ? 'active' : ''; ?>">
+                    <a href="manage_events.php" class="nav-link">
+                        <i class="fas fa-calendar nav-icon"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+                <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'payments.php' ? 'active' : ''; ?>">
+                    <a href="payments.php" class="nav-link">
+                        <i class="fas fa-credit-card nav-icon"></i>
+                        <span>Payments</span>
+                    </a>
+                </li>
+                <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'manage_quizzes.php' ? 'active' : ''; ?>">
+                    <a href="manage_quizzes.php" class="nav-link">
+                        <i class="fas fa-question-circle nav-icon"></i>
+                        <span>Quizzes</span>
+                    </a>
+                </li>
+                <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'manage_sessions.php' ? 'active' : ''; ?>">
+                    <a href="manage_sessions.php" class="nav-link">
+                        <i class="fas fa-clock nav-icon"></i>
+                        <span>Sessions</span>
                     </a>
                 </li>
                 <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>">
@@ -49,6 +73,12 @@
         <div class="nav-section">
             <p class="nav-section-title">OTHERS</p>
             <ul class="nav-menu">
+                <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+                    <a href="profile.php" class="nav-link">
+                        <i class="fas fa-user nav-icon"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="../../logout.php" class="nav-link">
                         <i class="fas fa-sign-out-alt nav-icon"></i>
